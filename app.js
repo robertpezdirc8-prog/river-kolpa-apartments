@@ -59,13 +59,13 @@ const GAL = [
   {f:"noc",            g:"izkus", w:720,  h:1600, t:"Masažna kad na lesenem odru ob mraku"},
   {f:"vrt-lezniki",    g:"izkus", w:1080, h:570,  t:"Dva ležalnika pred masažno kadjo"},
   {f:"uta-noc",        g:"izkus", w:1600, h:720,  t:"Uta zvečer, čez vrt poteka vrsta lučk"},
-  {f:"zunanjost-30b",  g:"vrt",   lok:"30b", w:1600, h:721, t:"Hiša z masažno kadjo pod nadstreškom"},
+  {f:"zunanjost-30b",  g:"vrt",   lok:"30b", w:1600, h:721, t:"Hiša z nadstreškom, masažno kadjo in garazo"},
   {f:"travnik-30b",    g:"vrt",   lok:"30b", w:1600, h:900, t:"Travnik pred hišo z nogometnimi vrati in ležalniki"},
   {f:"kopalnica-30b",  g:"noter", lok:"30b", w:861,  h:1600, t:"Kopalnica s tušem, umivalnikom in strojem za perilo"},
   {f:"soba-30b-a",     g:"noter", lok:"30b", w:1092, h:1441, t:"Spalnica z zakonsko posteljo in omaro"},
-  {f:"soba-30b-b",     g:"noter", lok:"30b", w:1051, h:1496, t:"Druga spalnica z zakonsko posteljo"},
+  {f:"soba-30b-b",     g:"noter", lok:"30b", w:1051, h:1496, t:"Spalnica z zakonsko posteljo in pobarvanim lesenim stropom"},
   {f:"soba-30b-c",     g:"noter", lok:"30b", w:1600, h:805,  t:"Soba z zakonsko in enojno posteljo"},
-  {f:"kuhinja-30b",    g:"noter", lok:"30b", w:1080, h:1457, t:"Kuhinja z jedilno mizo za štiri"},
+  {f:"kuhinja-30b",    g:"noter", lok:"30b", w:1080, h:1457, t:"Kuhinja s pečico, štedilnikom in jedilno mizo"},
   {f:"hodnik-30b",     g:"noter", lok:"30b", w:937,  h:1359, t:"Predprostor z omaro za obutev in ogledalom"},
   {f:"reka-01",        g:"reka",  lok:"reka", w:900,  h:600,  t:"Reka Kolpa poleti z naravnim kopališčem"},
   {f:"reka-02",        g:"reka",  lok:"reka", w:900,  h:600,  t:"Kopanje v Kolpi"},
@@ -99,9 +99,10 @@ const LOKI = [
     booking: "",
     enote: "dva apartmaja",
     glava: "Hiša s teraso, kadjo in travnikom",
-    lede: "Nadstrešena terasa z masažno kadjo, travnik z nogometnimi vrati in urejeni apartmaji. " +
-          "Razpored ležišč po enotah in razpoložljivost potrdimo ob povpraševanju.",
-    facts: [["2","samostojni enoti"],["kad","pod nadstreškom"],["travnik","z nogometnimi vrati"],["tuš","in pralni stroj"]],
+    lede: "Dva samostojna apartmaja v urejeni hiši. Na voljo sta kuhinja s pečico in štedilnikom " +
+          "ter kopalnica s tušem in pralnim strojem, pred hišo pa nadstrešena terasa z masažno " +
+          "kadjo in travnik z nogometnimi vrati.",
+    facts: [["2","samostojna apartmaja"],["kad","pod nadstreškom"],["travnik","z nogometnimi vrati"],["tuš","in pralni stroj"]],
     zunanja: ["zunanjost-30b", "travnik-30b"],
     notranja: ["soba-30b-a", "soba-30b-b", "soba-30b-c", "kuhinja-30b", "kopalnica-30b", "hodnik-30b"],
     slika: "zunanjost-30b"
@@ -411,9 +412,9 @@ const VIEWS = {
       ${l.notranja.map(f => `<figure class="ph">${img(f, GAL.find(g => g.f === f).t)}<figcaption>${GAL.find(g => g.f === f).t}</figcaption></figure>`).join("")}
     </div>
     <div class="facts" data-rv style="--d:420ms">${l.facts.map(f => fact(f[0], f[1])).join("")}</div>
-    <p class="fineprint" data-rv style="--d:500ms">Fotografije nastanitev v Gribljah 30 b so iz našega arhiva.
-    Kateri apartma je prost in koliko oseb sprejme, preverimo ob povpraševanju — razporeda,
-    ki ga nimamo potrjenega, na strani ne objavljamo.</p>
+    <p class="fineprint" data-rv style="--d:500ms">Vse fotografije so iz našega arhiva. Katera soba je v
+    katerem apartmaju in kateri od obeh apartmajev je v vašem terminu prost, preverimo ob
+    povpraševanju — razporeda, ki ga nimamo potrjenega, na strani ne objavljamo.</p>
     ${xlink("30b")}
     </div>`;
     }

@@ -126,6 +126,16 @@ for (const m of lokiSrc.matchAll(/(?:zunanja|notranja):\s*\[([^\]]*)\]/g))
 for (const m of lokiSrc.matchAll(/slika:\s*"([\w-]+)"/g))
   need(vArhivu.has(m[1]), `naslovna fotografija lokacije ${m[1]} je v arhivu`);
 
+/* Na naslovu 30 b števila oseb ne poznamo, zato ga ne sme izgovoriti nobena vrstica,
+   ki ga opisuje — ne zapis lokacije, ne podpis fotografije, ne besedilo pogleda. */
+const o30 = [
+  (lokiSrc.match(/id:\s*"30b"[\s\S]*?\n  \}/) || [""])[0],
+  ...(js.match(/\{f:"[\w-]+",\s*g:"[\w-]+",\s*lok:"30b",[^\n]*/g) || []),
+  (js.match(/\n  p30:\s*\{[\s\S]*?\n  \},/) || [""])[0]
+].join("\n");
+need(o30.length > 200 && !/\boseb\b/i.test(o30), "30 b ne navaja števila oseb");
+need(/dva samostojna apartmaja/i.test(o30), "30 b je zapisana kot dva apartmaja");
+
 const opcije = (js.match(/const ENOTE_OPTS = \[([\s\S]*?)\n\];/) || ["", ""])[1];
 for (const l of loki) need(opcije.includes(l.naslov), `obrazec ponuja enote na naslovu ${l.naslov}`);
 
