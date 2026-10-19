@@ -710,7 +710,13 @@ function paint() {
   });
 
   back.classList.toggle("show", stack.length > 1);
-  nav.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.go === top));
+  nav.querySelectorAll("button").forEach(b => {
+    const odprt = b.dataset.go === top;
+    b.classList.toggle("on", odprt);
+    /* Razred "on" je samo barva; bralnik zaslona mora vedeti, kateri pogled je odprt. */
+    if (odprt) b.setAttribute("aria-current", "page");
+    else b.removeAttribute("aria-current");
+  });
   odpriNaAktivnem(nav);
   requestAnimationFrame(osveziRobove);
 

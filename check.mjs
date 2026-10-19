@@ -173,6 +173,11 @@ need(/if \(!a\)[\s\S]{0,220}left: 0/.test(js), "meni se brez aktivnega gumba vrn
 const zbled = Number((js.match(/const ZBLED = (\d+)/) || [])[1]);
 need(zbled > 0 && css.includes(`calc(100% - ${zbled}px)`), `drsenje upošteva enak rob, kot ga zbledi css (${zbled} px)`);
 
+/* Razred "on" je barva, ki je bralnik zaslona ne vidi — odprt pogled mora v meniju nositi
+   tudi aria-current, sicer poslušec ne ve, kje je. */
+need(/nav\.querySelectorAll\("button"\)[\s\S]{0,300}setAttribute\("aria-current", "page"\)[\s\S]{0,120}removeAttribute\("aria-current"\)/.test(js),
+  "meni bralniku pove, kateri pogled je odprt, in oznako tudi odstrani");
+
 /* Glava se na ožjih zaslonih zlomi v dva pasu, zato mora odmik vsebine slediti njeni izmerjeni
    višini, ne oceni. Stalna vrednost je v preteklosti vsebino potisnila pod meni. */
 const odmiki = [...css.matchAll(/\.view\s*\{[^}]*padding(?:-top)?\s*:\s*([^;}]+)/g)].map(m => m[1]);
