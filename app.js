@@ -759,6 +759,8 @@ function showLb(i) {
   lbImg.src = `assets/${g.f}.jpg`;
   lbImg.alt = g.t;
   lbCap.textContent = `${lbi + 1} / ${lbList.length} — ${g.t}`;
+  /* naslednja se naloži šele, ko je trenutna na zaslonu, da z njo ne tekmuje za pas */
+  lbImg.onload = () => { new Image().src = `assets/${lbList[(lbi + 1) % lbList.length].f}.jpg`; };
 }
 function openLb(i, from) {
   const visible = [...document.querySelectorAll("#gal button:not([hidden])")].map(b => +b.dataset.lb);
