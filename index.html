@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>River Kolpa Apartments — dva apartmaja ob Kolpi, Griblje, Bela krajina</title>
+<meta name="description" content="River Kolpa Apartments, Griblje 70 pri reki Kolpi v Beli krajini. Dva prenovljena apartmaja v hiši: apartma za 7 in studio za 5 oseb, skupen vrt s teraso, jacuzzijem in letno kuhinjo. Reka je deset minut hoje. Brezplačen WiFi in parkirišče.">
+<meta name="theme-color" content="#0f2a24">
+<meta name="color-scheme" content="dark">
+<link rel="preload" as="image" href="assets/hero-terasa.webp" fetchpriority="high">
+<meta name="author" content="Majda Pezdirc">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="River Kolpa Apartments">
+<meta property="og:locale" content="sl_SI">
+<meta property="og:title" content="River Kolpa Apartments — Griblje ob Kolpi">
+<meta property="og:description" content="Dva apartmaja z vrtom, jacuzzijem in letno kuhinjo. Deset minut hoje do reke, ki je poleti najtoplejša v Sloveniji.">
+<meta property="og:image" content="assets/hero-terasa.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f2a24'/%3E%3Cpath d='M4 20c4-4 6 2 10-2s6 2 10-2 4 2 4 0' stroke='%23e0b287' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3Cpath d='M4 26c4-4 6 2 10-2s6 2 10-2 4 2 4 0' stroke='%237f9b85' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#stage">Preskoči na vsebino</a>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <button class="brand" data-go="home" aria-label="River Kolpa Apartments — domov">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none"><path d="M2 21c4-4 6 2 10-2s6 2 10-2 6 2 8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M2 27c4-4 6 2 10-2s6 2 10-2 6 2 8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><path d="M16 3l4.5 9h-9L16 3z" fill="currentColor" opacity=".9"/></svg>
+    </span>
+    <span class="brand-txt"><b>River Kolpa Apartments</b><i>Griblje · Bela krajina</i></span>
+  </button>
+
+  <nav class="nav" id="nav" aria-label="Glavna navigacija"></nav>
+
+  <div class="top-actions">
+    <button class="back" id="back" aria-label="Nazaj na prejšnji pogled">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Nazaj</span>
+    </button>
+    <a class="btn btn-ghost hide-sm" href="tel:+38640858732">040 858 732</a>
+    <button class="btn btn-solid" data-go="booking">Prosti termini</button>
+  </div>
+</header>
+
+<main id="stage" class="stage"></main>
+
+<footer class="foot">
+  <nav class="trail" id="trail" aria-label="Trenutna lokacija"></nav>
+  <div class="foot-right">
+    <a class="call" href="tel:+38640858732"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3h3l2 5-2.5 1.5a12 12 0 0 0 6 6L16 13l5 2v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4 5.2 2 2 0 0 1 6 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>040 858 732</a>
+    <span class="soc"><a href="https://www.facebook.com/p/RIVER-KOLPA-Apartment-Griblje-Bela-krajina-Slovenia-100063596405674/" target="_blank" rel="noopener">Facebook</a><a href="https://www.booking.com/hotel/si/holiday-house-kolpa.sl.html" target="_blank" rel="noopener">Booking.com</a></span>
+    <span class="legal">LOGIS APARTMENTS · Majda Pezdirc s.p. · PE River Kolpa Apartment, Griblje 70, 8332 Gradac · matična št. 9057641002</span>
+  </div>
+</footer>
+
+<p class="sr-only" id="live" aria-live="polite"></p>
+
+<dialog class="lightbox" id="lightbox" aria-label="Fotografija v polni velikosti">
+  <button class="lb-close" id="lbClose" aria-label="Zapri">&times;</button>
+  <button class="lb-nav prev" id="lbPrev" aria-label="Prejšnja fotografija">&#8249;</button>
+  <img id="lbImg" alt="">
+  <button class="lb-nav next" id="lbNext" aria-label="Naslednja fotografija">&#8250;</button>
+  <div class="lb-cap" id="lbCap"></div>
+</dialog>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"LodgingBusiness","name":"River Kolpa Apartments",
+"description":"Dva prenovljena apartmaja ob reki Kolpi v Gribljah, Bela krajina. Apartma za 7 in studio za 5 oseb, skupen vrt s teraso, jacuzzijem in letno kuhinjo; deset minut hoje do naravnega kopališča.",
+"telephone":"+38640858732","email":"majda.pezdirc@gmail.com","numberOfRooms":2,"petsAllowed":true,
+"image":"assets/hero-terasa.jpg","address":{"@type":"PostalAddress","streetAddress":"Griblje 70","postalCode":"8332","addressLocality":"Gradac","addressRegion":"Črnomelj","addressCountry":"SI"},
+"geo":{"@type":"GeoCoordinates","latitude":45.5735782,"longitude":15.295151},
+"aggregateRating":{"@type":"AggregateRating","ratingValue":"10","reviewCount":8,"bestRating":"10","worstRating":"1"},
+"amenityFeature":[
+ {"@type":"LocationFeatureSpecification","name":"Brezplačen WiFi","value":true},
+ {"@type":"LocationFeatureSpecification","name":"Brezplačno parkirišče","value":true},
+ {"@type":"LocationFeatureSpecification","name":"Klimatska naprava","value":true},
+ {"@type":"LocationFeatureSpecification","name":"Štedilnik na drva","value":true},
+ {"@type":"LocationFeatureSpecification","name":"Popolnoma opremljena kuhinja","value":true},
+ {"@type":"LocationFeatureSpecification","name":"Jacuzzi na vrtu","value":true},
+ {"@type":"LocationFeatureSpecification","name":"Ograjen vrt in travnik","value":true}]}
+</script>
+<script src="app.js"></script>
+</body>
+</html>
