@@ -370,7 +370,6 @@ const VIEWS = {
             raven televizor, klimatska naprava, ogrevanje in štedilnik na drva.</dd></div>
             <div><dt>Kuhinja</dt><dd>Štedilnik na plin s pečico in indukcijska plošča,
             dva hladilnika, mikrovalna, aparat za palačinke, blender, kavni aparat in kotliček.</dd></div>
-            <div><dt>Kopalnica</dt><dd>Lastna kopalnica s tušem in sušilcem za lase.</dd></div>
           </dl>
         </div>
       </article>
@@ -384,7 +383,7 @@ const VIEWS = {
             <div><dt>Ležišča</dt><dd>Nadstavna postelja in raztegljiv kavč — udobno za
             štiri do pet oseb.</dd></div>
             <div><dt>Zunanji prostor</dt><dd>Lastna terasa z mizo in stoli, obrnjena v vrt.</dd></div>
-            <div><dt>Oprema</dt><dd>Klimatska naprava, ogrevanje, lastna kopalnica,
+            <div><dt>Oprema</dt><dd>Klimatska naprava, ogrevanje,
             brezplačen WiFi in parkirišče tik ob hiši.</dd></div>
             <div><dt>Skupno</dt><dd>Vrt, jacuzzi, letna kuhinja in žar so skupni za obe enoti;
             vsaka družina ima svoj del terase.</dd></div>

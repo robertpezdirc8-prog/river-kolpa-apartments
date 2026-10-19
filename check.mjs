@@ -136,6 +136,24 @@ const o30 = [
 need(o30.length > 200 && !/\boseb\b/i.test(o30), "30 b ne navaja števila oseb");
 need(/dva samostojna apartmaja/i.test(o30), "30 b je zapisana kot dva apartmaja");
 
+/* Kopalnico sme obljubiti samo hiša, katere kopalnica je tudi fotografirana. Kar gost ne more
+   videti, ne sme biti napisano samostojno — sicer strani verjame tisto, česar ne vemo. */
+for (const l of loki) {
+  const pogled = (js.match(new RegExp(`\\n  ${l.pogled}:\\s*\\{[\\s\\S]*?\\n  \\},`)) || [""])[0];
+  const zapis = (lokiSrc.match(new RegExp(`id:\\s*"${l.id}"[\\s\\S]*?\\n  \\}`)) || [""])[0];
+  const dokaz = galE.some(g => g.lok === l.id && /kopalnic/i.test(g.f + " " + g.t));
+  const obljuba = /kopalnic/i.test(pogled + zapis);
+  need(!obljuba || dokaz,
+    `${l.naslov}: kopalnica je ${obljuba ? "obljubljena" : "neobljubljena"} in ${dokaz ? "fotografirana" : "nefotografirana"}`);
+}
+
+/* Identifikacija ponudnika v nogi je pravni podatek, ne okras. Vpis v poslovnem registru
+   (AJPES, izpostava Novo mesto): LOGIS APARTMENTS, Majda Pezdirc s.p., Griblje 30 B, 8332
+   Gradac — matična 9057641000, davčna SI97033910. Številka podružnice ni številka subjekta. */
+need(/matična št\. 9057641000/.test(html), "noga navaja matično številko subjekta 9057641000");
+need(/davčna št\. SI97033910/.test(html), "noga navaja davčno številko SI97033910");
+need(!/9057641002/.test(html), "v nogi ni matične številke podružnice namesto številke subjekta");
+
 const opcije = (js.match(/const ENOTE_OPTS = \[([\s\S]*?)\n\];/) || ["", ""])[1];
 for (const l of loki) need(opcije.includes(l.naslov), `obrazec ponuja enote na naslovu ${l.naslov}`);
 

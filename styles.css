@@ -370,6 +370,16 @@ textarea{resize:none;min-height:74px}
   .distlist{grid-template-columns:repeat(2,minmax(0,1fr))}
   .placegrid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+/* Identifikacija ponudnika v nogi ne sme biti okrajšana s tripičjem: od te širine navzdol gre
+   v svojo vrstico, kot na telefonu. Višino zavihane vrstice prevzame --fb, ki ga izmeri
+   ResizeObserver, zato vsebina pod njo ne uide izven zaslona. */
+@media (max-width:1320px) and (min-width:901px){
+  .foot{height:auto;padding:9px var(--pad);gap:6px}
+  .foot-right{flex-wrap:wrap;justify-content:flex-end;gap:4px 12px}
+  .foot-right .legal{flex:1 0 100%;order:3;display:block;white-space:normal;overflow:visible;
+    text-align:center;font-size:9.5px;letter-spacing:.05em;text-transform:none;line-height:1.4}
+  .view{padding-bottom:calc(var(--fb,52px) + 14px)}
+}
 @media (max-width:900px){
   /* vrstica se zaviha v dve vrsti, ovitek pa se je moral končati pod celim zabojem —
      sicer spodnja vrsta gumijev lebdi nad fotografijo in je ni močno brati */
