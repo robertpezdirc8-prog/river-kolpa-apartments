@@ -165,6 +165,14 @@ need(/več kot \$\{OSEBE_MAX\}/.test(js), "skupina nad mejo lahko to napiše, na
 need(/b\.dataset\.lok !== galLok/.test(js), "galerija filtrira hkrati po vsebini in po lokaciji");
 need(/id="galEmpty"/.test(js) && /class="gal-empty"/.test(js), "prazna kombinacija filtrov je napovedana");
 
+/* Na ozkem zaslonu je meni ena drsna vrstica: odprtje pogleda mora pripeljati aktivni gumb
+   v vidno polje, rob pa mora napovedati, da se za njim še kaj nadaljuje. */
+need(/odpriNaAktivnem\(nav\)/.test(js), "odprt pogled pripelje aktivni gumb v vidno polje");
+need(/\.nav\.ima-desno/.test(css) && /"ima-desno"/.test(js), "drsna vrstica napove, da se nadaljuje za robom");
+need(/if \(!a\)[\s\S]{0,220}left: 0/.test(js), "meni se brez aktivnega gumba vrne na začetek");
+const zbled = Number((js.match(/const ZBLED = (\d+)/) || [])[1]);
+need(zbled > 0 && css.includes(`calc(100% - ${zbled}px)`), `drsenje upošteva enak rob, kot ga zbledi css (${zbled} px)`);
+
 /* 10. glava mora obljubiti obe nastanitvi, sicer delitelj na Facebooku pokaže staro ponudbo */
 need((html.match(/"@type":"LodgingBusiness"/g) || []).length === loki.length,
   `JSON-LD napove ${loki.length} nastanitvi`);

@@ -63,6 +63,17 @@ img{display:block}
 }
 .nav button:hover{color:var(--cream);background:rgba(245,239,228,.07)}
 .nav button.on{color:var(--ink);background:var(--cream)}
+/* vrstica, ki se konča sredi gumba, je videti kot okrnjen seznam. Rob zbledi, dokler je za
+   njim kaj vsebine; ko pridemo do konca, se razred ugasne in zadnji gumb pokaže v celoti. */
+.nav.ima-desno,.tabs.ima-desno{
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 46px),transparent 100%);
+  mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 46px),transparent 100%)}
+.nav.ima-levo,.tabs.ima-levo{
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 46px,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 46px,#000 100%)}
+.nav.ima-levo.ima-desno,.tabs.ima-levo.ima-desno{
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 46px,#000 calc(100% - 46px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 46px,#000 calc(100% - 46px),transparent 100%)}
 
 .top-actions{display:flex;align-items:center;gap:10px}
 .btn{

@@ -628,6 +628,48 @@ let userAction = false;
 nav.innerHTML = ORDER
   .map(v => `<button data-go="${v}" data-flat="1">${VIEWS[v].label}</button>`).join("");
 
+/* ── drsenje vrstic ───────────────────────────
+   Na ozkem zaslonu se meni in filtri zložijo v eno vrstico, ki se nadaljuje za robom. Brez
+   tega obiskovalec ne vidi, da je za "Reka Kolpa" še Galerija, in ne ve, kje v meniju stoji. */
+/* ZBLED mora ostati enak širini roba v maski v styles.css — sicer preverjamo vidnost po
+   drugem pasu, kot ga dejansko zbledimo. */
+const ZBLED = 46;
+const roboveDrske = el => {
+  const preseg = el.scrollWidth - el.clientWidth;
+  el.classList.toggle("ima-levo", el.scrollLeft > 4);
+  el.classList.toggle("ima-desno", el.scrollLeft < preseg - 4);
+};
+const osveziRobove = () => document.querySelectorAll(".nav, .tabs").forEach(roboveDrske);
+const odpriNaAktivnem = el => {
+  const a = el.querySelector(".on, [aria-current=\"page\"]");
+  if (!a) {
+    /* dom in rezervacija nimata svojega gumba — takrat se vrstica vrne na začetek,
+       sicer ostane na repu menija in obiskovalec ne vidi prvih gumbov */
+    el.scrollTo({ left: 0, behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth" });
+    roboveDrske(el);
+    return;
+  }
+  roboveDrske(el);
+  const preseg = el.scrollWidth - el.clientWidth;
+  if (preseg <= 0) return;
+  const r = a.getBoundingClientRect(), n = el.getBoundingClientRect();
+  const z = el.scrollLeft, levi = r.left - n.left, desni = r.right - n.left;
+  /* če je gumb že v celoti zunaj zbledenega roba, ne drsimo — vsako ponovno drsenje ob
+     prebarvanju deluje kot trzanje menija */
+  const robL = el.classList.contains("ima-levo") ? ZBLED : 0;
+  const robD = el.classList.contains("ima-desno") ? ZBLED : 0;
+  if (levi >= robL && desni <= el.clientWidth - robD) return;
+  el.scrollTo({
+    left: Math.max(0, Math.min(preseg, z + levi - (el.clientWidth - r.width) / 2)),
+    behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth"
+  });
+};
+addEventListener("scroll", e => {
+  if (e.target instanceof Element && (e.target.classList.contains("nav") || e.target.classList.contains("tabs")))
+    roboveDrske(e.target);
+}, { passive: true, capture: true });
+addEventListener("resize", osveziRobove);
+
 function mount(view) {
   if (stage.querySelector(`[data-view="${view}"]`)) return;
   const el = document.createElement("section");
@@ -669,6 +711,8 @@ function paint() {
 
   back.classList.toggle("show", stack.length > 1);
   nav.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.go === top));
+  odpriNaAktivnem(nav);
+  requestAnimationFrame(osveziRobove);
 
   trail.innerHTML = stack.map((v, i) => {
     const label = i === 0 ? "Domov" : VIEWS[v].label;
@@ -1018,6 +1062,7 @@ const syncBars = () => {
 new ResizeObserver(syncBars).observe(topbarEl);
 new ResizeObserver(syncBars).observe(footEl);
 syncBars();
+osveziRobove();
 
 /* ── številke, paralaksa, nagib ploščic ────── */
 const calm = matchMedia("(prefers-reduced-motion:reduce)").matches;
