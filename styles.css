@@ -256,11 +256,6 @@ h1:focus-visible,h2:focus-visible{outline-offset:10px}
 .card i{position:absolute;top:13px;left:15px;font-style:normal;display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--wood-soft);background:var(--scrim);padding:6px 12px 6px 9px;border-radius:999px}
 .card i svg{width:14px;height:14px;flex:none}
 
-.distlist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px 24px;margin-top:16px;flex:none;border-top:1px solid var(--line);padding-top:12px}
-.distlist div{display:flex;align-items:baseline;gap:12px;padding:7px 0;border-bottom:1px solid var(--line)}
-.distlist b{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:500;color:var(--wood-soft);flex:none;min-width:56px}
-.distlist span{font-size:12.5px;color:var(--text)}
-
 /* ── galerija ──────────────────────────────── */
 .gal-head{display:flex;justify-content:space-between;align-items:flex-end;gap:22px;flex-wrap:wrap}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}
@@ -388,7 +383,6 @@ textarea{resize:none;min-height:74px}
   .home-top{grid-template-columns:minmax(0,1fr)}
   .home-aside{display:none}
   .amenbar{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .distlist{grid-template-columns:repeat(2,minmax(0,1fr))}
   .placegrid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 /* Identifikacija ponudnika v nogi ne sme biti okrajšana s tripičjem: pod to širino gre v svojo
@@ -491,7 +485,6 @@ textarea{resize:none;min-height:74px}
   .amenbar div{font-size:12.5px}
   .card p{font-size:13px}
   .card i{font-size:10.5px}
-  .distlist span{font-size:13px}
   .fineprint{font-size:12.5px}
   .hosted{font-size:12.5px}
   /* na telefonu se vsebina ne reže v notranje drsenje — kartici gresta ena pod drugo,

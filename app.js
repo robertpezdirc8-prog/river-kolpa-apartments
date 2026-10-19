@@ -498,14 +498,6 @@ const VIEWS = {
         ${stripCard("fire","Izročilo","Vasi in domače kmetije","Bučno olje, vino, kruh in sir — večinoma na voljo ves teden.","uta-dan","gallery","izkus")}
         ${stripCard("pin","Lokacija","Na meji s Hrvaško","Nekdanji prehodi ob reki so spet odprti — zvečer sta v igri dve državi.","miza","gallery","reka")}
       </div>
-      <div class="distlist">
-        <div><b>2,4 km</b><span>Gostilna Kapušin</span></div>
-        <div><b>5 km</b><span>Martinkova domačija · najdišče Kučar</span></div>
-        <div><b>6 km</b><span>Stari mlin · grad Pobrežje · letalo DC-3</span></div>
-        <div><b>7 km</b><span>Trčkova domačija</span></div>
-        <div><b>9 km</b><span>Stoničev grad · Maleričeva hiša</span></div>
-        <div><b>10 min</b><span>hoje do naravnega kopališča</span></div>
-      </div>
     </div>`
   },
 

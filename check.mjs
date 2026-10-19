@@ -215,6 +215,28 @@ need(!/gara[žz]/i.test(vidno), "vidno besedilo ne obljublja garaže");
 need(/parkiri[sš][cč]/i.test(js) && /parkiri[sš][cč]/i.test(html),
   "obe datoteki obljubita parkirišče, ne garaže");
 
+/* Stran oglašuje samo našo ponudbo. Imena drugih ponudnikov in njihovih znamenitosti so
+   reklama zanje — gost jih najde sam, mi pa ne smemo voziti prometa na njihov račun.
+   Seznam je enaka varovalka kot prepoved garaže: če ime zopet pride v besedilo, se vrata
+   zaprejo. V pogledu Okolica je pod karticami stal seznam razdalj do njih — niti CSS ga ne
+   sme več poznati, sicer se vrne skupaj z razredom, ki ga nihče več ne uporablja. */
+const TUJE = ["Gostilna Kapušin", "Martinkova domačija", "Trčkova domačija", "Stoničev grad",
+  "Maleričeva hiša", "grad Pobrežje", "najdišče Kučar", "Stari mlin", "letalo DC-3"];
+for (const t of TUJE) need(!vidno.includes(t), `vidno besedilo ne omenja drugega ponudnika (${t})`);
+need(!/class="distlist"/.test(js) && !/\.distlist/.test(css),
+  "seznama razdalj do drugih ponudnikov ni ne v kodi ne v slogu");
+
+/* Vsaka zunanja povezava mora voditi na našo ponudbo: lastna objava na Bookingu, lastni
+   Facebook, zemljevid naših naslovov, WhatsApp in e-pošta — plus identifikatorji shem, ki jih
+   bere le stroj. Tuja domena pomeni, da stran pripelje goste nekemu drugemu. */
+const SVOJI = ["wa.me", "booking.com/hotel/si/holiday-house-kolpa", "google.com/maps",
+  "robertpezdirc8-prog.github.io", "facebook.com/p/RIVER-KOLPA", "schema.org", "w3.org"];
+const povezave = [...new Set(`${js}\n${html}`.match(/https?:\/\/[^\s"'()<>]+/g) || [])];
+const tujePovezave = povezave.filter((u) => !SVOJI.some((s) => u.includes(s)));
+need(tujePovezave.length === 0,
+  `nobena od ${povezave.length} zunanjih povezav ne vodi na tujo ponudbo` +
+  (tujePovezave.length ? ` (najdeno: ${tujePovezave.join(", ")})` : ""));
+
 /* Beseda, ki se drugje piše s č, š ali ž, brez šumnikov je videti kot tipkarski spodrsljaj,
    ne kot poenostavitev. Dovoljene so samo besede, ki so tudi brez šumnikov pravilna slovenska
    beseda: se (sklonitev), vas (množina vasi), konca (rodilnik besede konec). */
