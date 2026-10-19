@@ -133,9 +133,12 @@ const FAQ = [
 
 /* ── pomožne funkcije ──────────────────────── */
 const DIM = Object.fromEntries(GAL.map(g => [g.f, [g.w, g.h]]));
+/* ploščice v 640 px različici zadostujejo do približno 2400 px širokih zaslonov; nad tem bralec sam
+   vzame izvirnik, ker mu srcset po navedeni širini ne ponudi dovolj goste kandidata */
+const IMG_SIZES = "(max-width:640px) 50vw, (max-width:900px) 30vw, 26vw";
 const img = (f, alt, cls = "") => {
   const d = DIM[f];
-  return `<img src="assets/${f}.webp" onerror="this.src='assets/${f}.jpg'" alt="${alt}"${d ? ` width="${d[0]}" height="${d[1]}"` : ""} ${cls ? `class="${cls}"` : ""} loading="lazy">`;
+  return `<img src="assets/${f}.webp" srcset="assets/t/${f}.webp 640w, assets/${f}.webp ${d ? d[0] : 1868}w" sizes="${IMG_SIZES}" onerror="this.src='assets/${f}.jpg'" alt="${alt}"${d ? ` width="${d[0]}" height="${d[1]}"` : ""} ${cls ? `class="${cls}"` : ""} loading="lazy">`;
 };
 
 const galCount = n => `${n} ${n === 1 ? "fotografija" : n === 2 ? "fotografiji" : n === 3 || n === 4 ? "fotografije" : "fotografij"}`;
@@ -703,17 +706,19 @@ function wireForm() {
   const err = document.getElementById("rfqErr");
   const wa = document.getElementById("waLink");
   const fields = () => Object.fromEntries(new FormData(f).entries());
-  const valid = () => ["ime", "kontakt", "prihod", "odhod"].every(n => f.elements[n].value);
+  /* ISO datum se primerja po abecedi enako kot po času, zato ga ne pretvarjamo v Date */
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const danes = iso(new Date());
+  f.elements.prihod.min = f.elements.odhod.min = danes;
+  const valid = () => ["ime", "kontakt", "prihod", "odhod"].every(n => f.elements[n].value) &&
+    f.elements.prihod.value >= danes && f.elements.odhod.value >= f.elements.prihod.value;
 
   const sync = () => {
     const [a, b] = [f.elements.prihod, f.elements.odhod];
-    if (a.value && b.value) {
-      const d = Math.round((new Date(b.value) - new Date(a.value)) / 864e5);
-      a.min = a.value;
-      b.min = a.value;
-      if (d < 0) b.setCustomValidity("Odhod mora biti za prihodom.");
-      else b.setCustomValidity("");
-    }
+    /* na prihodu meja ostane današnji dan — če bi jo premaknili na izbrani datum, se polje zaklene
+       in ga kupec ne more več popraviti na zgodnejši termin */
+    b.min = a.value && a.value > danes ? a.value : danes;
+    if (a.value && b.value) b.setCustomValidity(a.value > b.value ? "Odhod mora biti za prihodom." : "");
     err.hidden = true;
   };
   f.addEventListener("input", sync);
