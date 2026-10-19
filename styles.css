@@ -338,12 +338,19 @@ textarea{resize:none;min-height:74px}
 @media (max-width:900px){
   /* vrstica se zaviha v dve vrsti, ovitek pa se je moral končati pod celim zabojem —
      sicer spodnja vrsta gumijev lebdi nad fotografijo in je ni močno brati */
-  .topbar{height:auto;flex-wrap:wrap;padding:10px var(--pad) 0;
+  .topbar{height:auto;flex-wrap:wrap;padding:8px var(--pad) 0;
     background:linear-gradient(180deg,rgba(8,22,18,.98) 55%,rgba(8,22,18,.94) 88%,rgba(8,22,18,0) 100%)}
-  .nav{order:3;width:100%;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:9px 0 11px}
-  .nav button{padding:11px 13px;font-size:10.5px;letter-spacing:.12em}
-  .btn{padding:14px 18px}
-  .back{padding:12px 17px 12px 13px}
+  /* pet gumijev se je na ozkem zaslonu zavilo v dve vrsti in je skupaj z nogo pojedlo pol
+     zaslona; ena vrstica, ki se drsi vstran, pusti vsebini prostor tudi na majhnih telefonih.
+     Negativni rob raztegne drsno vrsto čez cel zaslon, da se gumbi ne režejo pred robom,
+     notranji rob pa ohrani enak odmik kot preostala vsebina. */
+  .nav{order:3;flex:0 0 calc(100% + var(--pad) * 2);margin:0 calc(var(--pad) * -1);
+    display:flex;flex-wrap:nowrap;align-items:center;overflow-x:auto;justify-content:flex-start;
+    gap:6px;padding:8px var(--pad) 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .nav::-webkit-scrollbar{display:none}
+  .nav button{flex:none;padding:10px 13px;font-size:10.5px;letter-spacing:.12em}
+  .btn{padding:12px 16px}
+  .back{padding:10px 15px 10px 11px}
   .trail button{padding:9px 10px}
   .soc a{padding:11px 2px}
   .tab{padding:15px 16px;font-size:11px}
@@ -364,18 +371,23 @@ textarea{resize:none;min-height:74px}
   .amenbar{grid-template-columns:repeat(2,minmax(0,1fr))}
   .score{grid-template-columns:1fr}
   .submit-row{grid-template-columns:1fr}
-  .foot{height:auto;padding:9px var(--pad);flex-wrap:wrap;gap:8px}
+  .foot{height:auto;padding:8px var(--pad);flex-wrap:wrap;gap:6px}
   /* identifikacija ponudnika mora ostati vidna tudi na telefonu; v eni vrstici z velikimi
      tiskanimi črkami ni berljiva, zato gre v svojo vrstico in na male črke */
-  .foot-right{flex-wrap:wrap;justify-content:flex-end;gap:6px 14px}
+  .foot-right{flex-wrap:wrap;justify-content:flex-end;gap:4px 12px}
   .foot-right .legal{flex:1 0 100%;order:3;display:block;white-space:normal;overflow:visible;
-    text-align:center;font-size:8.5px;letter-spacing:.05em;text-transform:none;line-height:1.45}
-  .foot .call{display:flex}
+    text-align:center;font-size:8px;letter-spacing:.04em;text-transform:none;line-height:1.4}
+  .foot .call{display:flex;padding:9px 14px}
+  .soc a{padding:8px 2px}
   .trail{flex-wrap:wrap}
   input,select,textarea{font-size:16px}
   label{font-size:11px}
   .eyebrow{font-size:11px}
-  .brand-txt i{font-size:10px}
+  /* prva vrstica vrstice mora ostati ena sama: podnaslov in velika pisava jo prelomita */
+  .brand-txt i{display:none}
+  .brand-txt b{font-size:18px}
+  .topbar{gap:10px}
+  .top-actions{gap:8px}
   .door i{font-size:10px}
   .chip{font-size:12px}
   .unit dt{font-size:10.5px}
@@ -395,14 +407,24 @@ textarea{resize:none;min-height:74px}
 }
 @media (max-width:600px){
   .topbar{padding:8px var(--pad) 0}
-  .brand-txt i{display:none}
-  .brand-txt b{font-size:18px}
-  .top-actions{width:100%;order:2;justify-content:space-between;gap:10px}
-  .btn{padding:13px 16px}
-  .nav{padding:8px 0 9px;gap:5px}
+  /* ime ostane valoven znak: besedilo, NAZAJ in PROSTI TERMINI se v eno vrstico
+     ne izidejo niti na 360 px, prelomljena vrstica pa je pojedla tretjino zaslona */
+  .brand-txt{display:none}
+  .top-actions{order:2;justify-content:flex-end;gap:8px}
+  .btn{padding:12px 15px}
+  /* drobtinico na telefonu nadomesti gumb NAZAJ v zgornji vrstici */
+  .trail{display:none}
+  .nav{padding-top:8px;padding-bottom:9px;gap:5px}
   .nav button{padding:10px 12px;font-size:10px}
   .trail button{padding:8px 9px}
   .soc a{padding:9px 2px}
+}
+/* najozji telefoni (320 px): besedilo NAZAJ in poln gumb potisneta dejanja v drugo
+   vrstico, ikona brez napisa pa vrstico ohrani celo */
+@media (max-width:340px){
+  .back span{display:none}
+  .back{padding:10px 12px}
+  .btn{padding:11px 13px;font-size:11px;letter-spacing:.1em}
 }
 @media (max-width:420px){
   .fgrid{grid-template-columns:1fr}
