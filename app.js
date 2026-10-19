@@ -32,15 +32,13 @@ const ic = {
 
 /* Fotografije so iz lastnega arhiva nastanitve. w/h je prava velikost datoteke v px. */
 const GAL = [
-  {f:"hero-terasa",    g:"vrt",   w:1868, h:842,  t:"Pokrita terasa z razgledom v dolino"},
-  {f:"pogled-pergola", g:"vrt",   w:711,  h:1600, t:"Dolga miza pod pergolo"},
-  {f:"jacuzzi-terasa", g:"vrt",   w:963,  h:947,  t:"Vrtni kot z žarom in masažno kadjo"},
+  {f:"terasa-studio",  g:"vrt",   w:1600, h:720,  t:"Pokrita terasa z jedilno mizo in kotom za sprostitev"},
   {f:"letna-kuhinja",  g:"vrt",   w:1600, h:732,  t:"Letna kuhinja pod lesenim nadstreškom"},
-  {f:"lezniki",        g:"vrt",   w:1600, h:900,  t:"Ležalniki ob terasi"},
+  {f:"pergola-vrt",    g:"vrt",   w:1600, h:894,  t:"Pergola z belimi zavesami in jedilno mizo"},
+  {f:"miza-pergola",   g:"vrt",   w:1600, h:720,  t:"Pogled s pergole na vrt z ležalnikoma"},
+  {f:"jacuzzi-terasa", g:"vrt",   w:963,  h:947,  t:"Vrtni kot z žarom in masažno kadjo"},
   {f:"gugal",          g:"vrt",   w:1023, h:1537, t:"Viseči kokon med bršljanom"},
-  {f:"vrt-05",         g:"vrt",   w:404,  h:900,  t:"Ležišče za spanje v senci"},
-  {f:"travnik",        g:"vrt",   w:719,  h:1600, t:"Travnik za igro, viden s terase"},
-  {f:"otroci",         g:"vrt",   w:1600, h:988,  t:"Trambolin in nogometna vrata"},
+  {f:"vrt-05",         g:"vrt",   w:404,  h:900,  t:"Ležalnik ob zunanji kuhinji"},
   {f:"noter-01",       g:"noter", w:900,  h:405,  t:"Odprt dnevni prostor z jedilnico in kuhinjo"},
   {f:"noter-02",       g:"noter", w:900,  h:405,  t:"Kutna zofa pod lesenimi gredami"},
   {f:"noter-03",       g:"noter", w:900,  h:405,  t:"Opremljena kuhinja"},
@@ -48,10 +46,12 @@ const GAL = [
   {f:"soba-main",      g:"noter", w:1200, h:900,  t:"Soba s tremi posteljami"},
   {f:"soba-otroci",    g:"noter", w:1200, h:900,  t:"Soba z dvema nadstavnima postelama"},
   {f:"soba-kisa",      g:"noter", w:1080, h:977,  t:"Kot s štedilnikom na drva"},
-  {f:"kopalnica",      g:"noter", w:802,  h:1600, t:"Kopalnica s pralnim strojem"},
-  {f:"miza",           g:"izkus", w:844,  h:1600, t:"Zajtrk pod drevesom"},
+  {f:"miza",           g:"izkus", w:844,  h:1600, t:"Pogrnjena miza pod leseno pergolo"},
   {f:"izkus-01",       g:"izkus", w:900,  h:557,  t:"Domača pogača iz lastne peči"},
-  {f:"noc",            g:"izkus", w:720,  h:1600, t:"Jacuzzi zvečer"},
+  {f:"noc",            g:"izkus", w:720,  h:1600, t:"Masažna kad na lesenem odru ob mraku"},
+  {f:"masazna-kad",    g:"izkus", w:1600, h:721,  t:"Masažna kad z mehurčki pod visečimi cvetlicami"},
+  {f:"uta-dan",        g:"izkus", w:1600, h:648,  t:"Uta z masažno kadjo in lesenima ležalnikoma"},
+  {f:"uta-noc",        g:"izkus", w:1600, h:720,  t:"Uta zvečer, čez vrt poteka vrsta lučk"},
   {f:"reka-01",        g:"reka",  w:900,  h:600,  t:"Reka Kolpa poleti z naravnim kopališčem"},
   {f:"reka-02",        g:"reka",  w:900,  h:600,  t:"Kopanje v Kolpi"},
   {f:"reka-03",        g:"reka",  w:900,  h:758,  t:"Brisače in senca na rečnem bregu"},
@@ -176,7 +176,7 @@ const amb = () => `<div class="amb" aria-hidden="true">
   <b class="glow glow-a"></b><b class="glow glow-b"></b><b class="rays"></b>${MOTES}<b class="vig"></b>
 </div>`;
 
-const HERO_SHOTS = ["hero-terasa", "jacuzzi-terasa", "pogled-pergola"];
+const HERO_SHOTS = ["terasa-studio", "jacuzzi-terasa", "letna-kuhinja"];
 
 /* ── pogledi ───────────────────────────────── */
 const VIEWS = {
@@ -185,7 +185,7 @@ const VIEWS = {
     title: "River Kolpa Apartments — dva apartmaja ob Kolpi, Griblje",
     render: () => `
     <div class="hero">
-      ${HERO_SHOTS.map((s, i) => `<img class="${i === 0 ? "lead on" : `off${i}`}" src="assets/${s}.webp" alt="${i === 0 ? "Pokrita terasa River Kolpa Apartments z razgledom v dolino" : ""}" ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy" aria-hidden="true"'} decoding="async">`).join("")}
+      ${HERO_SHOTS.map((s, i) => `<img class="${i === 0 ? "lead on" : `off${i}`}" src="assets/${s}.webp" alt="${i === 0 ? "Pokrita terasa River Kolpa Apartments v Gribljah" : ""}" ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy" aria-hidden="true"'} decoding="async">`).join("")}
     </div>
     ${amb()}
     <div class="home-grid">
@@ -256,8 +256,8 @@ const VIEWS = {
         </div>
       </article>
       <article class="unit">
-        ${img("letna-kuhinja","Letna kuhinja z dolgo mizo pod lesenim nadstreškom")}
-        <span class="unit-cap">Vrt in letna kuhinja, skupna za obe enoti</span>
+        ${img("terasa-studio","Pokrita terasa z jedilno mizo in kotom za sprostitev")}
+        <span class="unit-cap">Pokrita terasa ob hiši</span>
         <div class="unit-body">
           <h3>Studio s teraso</h3>
           <p class="unit-meta">5 oseb · nadstavna postelja in raztegljiv kavč</p>
@@ -351,8 +351,8 @@ const VIEWS = {
       </div>
       <div class="strip" data-rv style="--d:340ms">
         ${stripCard("wave","Ob reki","Kopališča in kanu","Belokranjska riviera — kopanje, kajak in SUP; do vode je deset minut hoje.","reka-02","river")}
-        ${stripCard("bike","Aktivno","Pohodništvo in kolesarjenje","Pot ob Kolpi, Gradac, Adlešiči in Vinjska cesta; začetne točke so v kraju.","travnik","gallery","reka")}
-        ${stripCard("fire","Izročilo","Vasi in domače kmetije","Bučno olje, vino, kruh in sir — večinoma na voljo ves teden.","lezniki","gallery","izkus")}
+        ${stripCard("bike","Aktivno","Pohodništvo in kolesarjenje","Pot ob Kolpi, Gradac, Adlešiči in Vinjska cesta; začetne točke so v kraju.","vrt-05","gallery","reka")}
+        ${stripCard("fire","Izročilo","Vasi in domače kmetije","Bučno olje, vino, kruh in sir — večinoma na voljo ves teden.","uta-dan","gallery","izkus")}
         ${stripCard("pin","Lokacija","Na meji s Hrvaško","Nekdanji prehodi ob reki so spet odprti — zvečer sta v igri dve državi.","miza","gallery","reka")}
       </div>
       <div class="distlist">
