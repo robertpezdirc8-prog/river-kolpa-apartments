@@ -128,6 +128,12 @@ for (const m of lokiSrc.matchAll(/slika:\s*"([\w-]+)"/g))
 
 const opcije = (js.match(/const ENOTE_OPTS = \[([\s\S]*?)\n\];/) || ["", ""])[1];
 for (const l of loki) need(opcije.includes(l.naslov), `obrazec ponuja enote na naslovu ${l.naslov}`);
+
+/* Isti obrazec ponuja "oba apartmaja" in vpraša za število oseb. Če se number sklene
+   pred vsoto enot, devetčlanska skupina ne more oddati povpraševanja. */
+const osebMeja = +(js.match(/const OSEBE_MAX = (\d+)/) || [])[1];
+need(osebMeja >= 12, `polje za osebe sega do ${osebMeja}, kar pokrije 7 + 5`);
+need(/več kot \$\{OSEBE_MAX\}/.test(js), "skupina nad mejo lahko to napiše, namesto da utone");
 need(/b\.dataset\.lok !== galLok/.test(js), "galerija filtrira hkrati po vsebini in po lokaciji");
 need(/id="galEmpty"/.test(js) && /class="gal-empty"/.test(js), "prazna kombinacija filtrov je napovedana");
 

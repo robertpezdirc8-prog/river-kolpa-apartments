@@ -132,6 +132,10 @@ const ENOTE_OPTS = [
   "Še ne vem — svetujte"
 ];
 
+/* 7 + 5, kar sprejme Griblje 70. Obrazec ponuja tudi oba apartmaja hkrati, zato stropa
+   ne sme postaviti nižje — sicer bi devetčlanska skupina morala lagati ali oditi. */
+const OSEBE_MAX = 12;
+
 const TABS = [
   {id:"vse", label:"Vse"},
   {id:"vrt", label:"Vrt in hiša"},
@@ -574,7 +578,7 @@ const VIEWS = {
             <label>Telefon ali e-pošta<input name="kontakt" required placeholder="041 234 567"></label>
             <label>Prihod<input name="prihod" type="date" required></label>
             <label>Odhod<input name="odhod" type="date" required></label>
-            <label>Število oseb<select name="osebe">${[1,2,3,4,5,6,7,8].map(n=>`<option${n===4?" selected":""}>${n}</option>`).join("")}</select></label>
+            <label>Število oseb<select name="osebe">${Array.from({length: OSEBE_MAX}, (_, i) => i + 1).map(n=>`<option${n===4?" selected":""}>${n}</option>`).join("")}<option>več kot ${OSEBE_MAX}</option></select></label>
             <label>Enota<select name="enota">${ENOTE_OPTS.map(o=>`<option>${o}</option>`).join("")}</select></label>
           </div>
           <label style="margin-top:12px">Sporočilo<textarea name="spor" placeholder="Zanima naju termin v juliju, prihajava z dvema otrokoma in psom."></textarea></label>
