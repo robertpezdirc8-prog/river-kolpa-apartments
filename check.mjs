@@ -1,4 +1,5 @@
 import { readFileSync, existsSync, statSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
@@ -72,6 +73,29 @@ need(onDisk.length > 0 && readdirSync(join(ROOT, "fonts")).some(f => /^OFL-.*\.t
   "licenca OFL je priložena pisavam");
 for (const m of html.matchAll(/rel="preload"[^>]*href="([\w./-]+\.woff2)"/g))
   need(existsSync(join(ROOT, m[1])), `prednaložena ${m[1]} obstaja`);
+
+/* 8. ista fotografija pod dvema imenoma — napaka, ki jo je lastnik že prijavil. Oko je ne
+      vidi na hitro, prstni odtisk vsebine pa: dve datoteki z enakimi bajti, od njiju ena laže. */
+const digest = f => createHash("md5").update(readFileSync(join(ROOT, f))).digest("hex");
+const byHash = new Map();
+const allImgs = [
+  ...readdirSync(join(ROOT, "assets")).filter(x => /\.(webp|jpg)$/.test(x)).map(x => `assets/${x}`),
+  ...readdirSync(join(ROOT, "assets/t")).map(x => `assets/t/${x}`)
+];
+for (const f of allImgs) {
+  const h = digest(f);
+  if (byHash.has(h)) fail(`enaka vsebina v dveh datotekah: ${byHash.get(h)} in ${f}`);
+  else byHash.set(h, f);
+}
+need(byHash.size === allImgs.length, `${allImgs.length} fotografij, nobena se ne podvaja po vsebini`);
+
+const cards = [...js.matchAll(/<article class="unit">([\s\S]*?)<\/article>/g)].map(m => m[1]);
+need(cards.length === 2, `uporabnik vidi ${cards.length} kartic enot`);
+const cardImgs = cards.map(c => (c.match(/img\("([\w-]+)"/) || [])[1]);
+need(cardImgs.every(Boolean), "obe kartici enot imata sliko");
+need(new Set(cardImgs.map(n => digest(`assets/${n}.webp`))).size === cardImgs.length,
+  `sliki na karticah enot nista ista fotografija (${cardImgs.join(", ")})`);
+for (const c of cards) need(/class="unit-cap"/.test(c), "kartica enote ima napis, kaj slika prikazuje");
 
 console.log(ok.map(m => "  OK  " + m).join("\n"));
 if (bad.length) console.log("\n" + bad.map(m => "  NAP " + m).join("\n"));

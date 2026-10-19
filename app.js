@@ -36,7 +36,6 @@ const GAL = [
   {f:"pogled-pergola", g:"vrt",   w:711,  h:1600, t:"Dolga miza pod pergolo"},
   {f:"jacuzzi-terasa", g:"vrt",   w:963,  h:947,  t:"Vrtni kot z žarom in masažno kadjo"},
   {f:"letna-kuhinja",  g:"vrt",   w:1600, h:732,  t:"Letna kuhinja pod lesenim nadstreškom"},
-  {f:"letna-kuhinja2", g:"vrt",   w:1600, h:732,  t:"Miza in žar zvečer"},
   {f:"lezniki",        g:"vrt",   w:1600, h:900,  t:"Ležalniki ob terasi"},
   {f:"gugal",          g:"vrt",   w:1023, h:1537, t:"Viseči kokon med bršljanom"},
   {f:"vrt-05",         g:"vrt",   w:404,  h:900,  t:"Ležišče za spanje v senci"},
@@ -241,6 +240,7 @@ const VIEWS = {
     <div class="unitcols" data-rv style="--d:340ms">
       <article class="unit">
         ${img("noter-01","Odprt dnevni prostor z jedilnico in kuhinjo")}
+        <span class="unit-cap">Dnevni prostor apartmaja</span>
         <div class="unit-body">
           <h3>Apartma z dvema spalnicama</h3>
           <p class="unit-meta">7 oseb · 7 ležišč · lastna terasa</p>
@@ -256,7 +256,8 @@ const VIEWS = {
         </div>
       </article>
       <article class="unit">
-        ${img("noter-02","Kutna zofa pod lesenimi gredami")}
+        ${img("letna-kuhinja","Letna kuhinja z dolgo mizo pod lesenim nadstreškom")}
+        <span class="unit-cap">Vrt in letna kuhinja, skupna za obe enoti</span>
         <div class="unit-body">
           <h3>Studio s teraso</h3>
           <p class="unit-meta">5 oseb · nadstavna postelja in raztegljiv kavč</p>
