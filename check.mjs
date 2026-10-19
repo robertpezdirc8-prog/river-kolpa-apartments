@@ -178,6 +178,18 @@ need(zbled > 0 && css.includes(`calc(100% - ${zbled}px)`), `drsenje upošteva en
 need(/nav\.querySelectorAll\("button"\)[\s\S]{0,300}setAttribute\("aria-current", "page"\)[\s\S]{0,120}removeAttribute\("aria-current"\)/.test(js),
   "meni bralniku pove, kateri pogled je odprt, in oznako tudi odstrani");
 
+/* Meni je na telefonu najpogostejši gib, a gumbi so podedovali namizno višino 34 px.
+   Cilj za prst ima spodnjo mejo, sicer je meni najmanjši gumb na strani. */
+const pasPrst = (css.match(/@media \(max-width:900px\)\{([\s\S]*?)\n\}/) || ["", ""])[1];
+const gumbiPrst = [...pasPrst.matchAll(/\.nav button\s*\{([^}]*)\}/g)].map(m => m[1]);
+const tabiPrst = [...pasPrst.matchAll(/\.tab\s*\{([^}]*)\}/g)].map(m => m[1]);
+const vsaj44 = (pravila) => pravila.some(v => /min-height:\s*(4[4-9]|[5-9]\d)px/.test(v)) &&
+  !pravila.some(v => /min-height:\s*\d+px/.test(v) && !/min-height:\s*(4[4-9]|[5-9]\d)px/.test(v));
+need(vsaj44(gumbiPrst), "meni ima na telefonu gumb, visok vsaj 44 px");
+need(gumbiPrst.some(v => /align-items:center/.test(v)),
+  "meni pri višini 44 px obdrži besedilo v sredini gumba");
+need(vsaj44(tabiPrst), "zavihki enot imajo na telefonu gumb, visok vsaj 44 px");
+
 /* Glava se na ožjih zaslonih zlomi v dva pasu, zato mora odmik vsebine slediti njeni izmerjeni
    višini, ne oceni. Stalna vrednost je v preteklosti vsebino potisnila pod meni. */
 const odmiki = [...css.matchAll(/\.view\s*\{[^}]*padding(?:-top)?\s*:\s*([^;}]+)/g)].map(m => m[1]);

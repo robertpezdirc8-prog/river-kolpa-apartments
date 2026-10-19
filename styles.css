@@ -438,7 +438,12 @@ textarea{resize:none;min-height:74px}
   .back{padding:10px 15px 10px 11px}
   .trail button{padding:9px 10px}
   .soc a{padding:11px 2px}
-  .tab{padding:15px 16px;font-size:11px}
+  .tab{padding:15px 16px;font-size:11px;min-height:44px}
+  /* Drsenje po menuju je na telefonu najpogostejši gib, a gumbi so iz pasu za namizni meni podedovali
+     34 px — najmanjši cilj na strani. Vsi ostali gumbi so že prilagojeni prstu, zato se jim mora
+     pripeti še meni; min-height deluje samo skupaj z notranjo poravnavo, sicer besedilo obtiči zgoraj. */
+  .nav button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;
+    padding:0 14px;font-size:11px}
   .view{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
     padding-top:calc(var(--tb,170px) + 12px);padding-bottom:calc(var(--fb,68px) + 16px + env(safe-area-inset-bottom,0px))}
   .copy,.units-wrap,.side,.home-title,.unit-body,.unitcols,.gal{overflow:visible;max-height:none}
