@@ -59,7 +59,7 @@ const GAL = [
   {f:"noc",            g:"izkus", w:720,  h:1600, t:"Jacuzzi na lesenem odru ob mraku"},
   {f:"vrt-lezniki",    g:"izkus", w:1080, h:570,  t:"Dva ležalnika pred jacuzzijem"},
   {f:"uta-noc",        g:"izkus", w:1600, h:720,  t:"Uta zvečer, čez vrt poteka vrsta lučk"},
-  {f:"zunanjost-30b",  g:"vrt",   lok:"30b", w:1600, h:721, t:"Hiša z nadstreškom, jacuzzijem in garažo"},
+  {f:"zunanjost-30b",  g:"vrt",   lok:"30b", w:1600, h:721, t:"Hiša z nadstreškom in jacuzzijem"},
   {f:"travnik-30b",    g:"vrt",   lok:"30b", w:1600, h:900, t:"Travnik pred hišo z nogometnimi vrati in ležalniki"},
   {f:"kopalnica-30b",  g:"noter", lok:"30b", w:861,  h:1600, t:"Kopalnica s tušem, umivalnikom in strojem za perilo"},
   {f:"soba-30b-a",     g:"noter", lok:"30b", w:1092, h:1441, t:"Spalnica z zakonsko posteljo in omaro"},

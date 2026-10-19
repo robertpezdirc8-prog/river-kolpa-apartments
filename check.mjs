@@ -208,6 +208,13 @@ const vidno = js.replace(/\bf:\s*"[a-z0-9-]+"/g, "") + html;
 need(!/masažn|\bkad\b|kadjo/i.test(vidno), "vidno besedilo več ne omenja masažne kadi");
 need(/jacuzzi/i.test(js) && /jacuzzi/i.test(html), "obe datoteki govorita o jacuzziju");
 
+/* Parkirišče je odprt prostor za avto, garaža zaprt. Gostje imajo parkirišče, garaže pa ne,
+   zato beseda ne sme nastopiti v nobeni trditvi. Ime datoteke na disku je lahko tudi takšno,
+   ker samo povezuje kodo s fotografijo — to je že zgoraj izvzeto iz `vidno`. */
+need(!/gara[žz]/i.test(vidno), "vidno besedilo ne obljublja garaže");
+need(/parkiri[sš][cč]/i.test(js) && /parkiri[sš][cč]/i.test(html),
+  "obe datoteki obljubita parkirišče, ne garaže");
+
 /* Beseda, ki se drugje piše s č, š ali ž, brez šumnikov je videti kot tipkarski spodrsljaj,
    ne kot poenostavitev. Dovoljene so samo besede, ki so tudi brez šumnikov pravilna slovenska
    beseda: se (sklonitev), vas (množina vasi), konca (rodilnik besede konec). */
@@ -233,7 +240,7 @@ need(brezSumnikov.length === 0,
 
 /* Primerjava zgoraj ujame samo besede, ki se drugje pišejo s šumniki. Besede, ki nastopijo
    enkrat same, mora varovati seznam: to so spodrsljaji, ki smo jih že pobrisali. */
-const PONOVLJENI = ["blizina", "ozje", "garazo"];
+const PONOVLJENI = ["blizina", "ozje"];
 const vrnjeni = PONOVLJENI.filter(b => new RegExp(`\\b${b}\\b`, "i").test(js + html + css));
 need(vrnjeni.length === 0, `popravljenih napak ni nazaj${vrnjeni.length ? " — " + vrnjeni.join(", ") : ""}`);
 
