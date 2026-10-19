@@ -97,6 +97,47 @@ need(new Set(cardImgs.map(n => digest(`assets/${n}.webp`))).size === cardImgs.le
   `sliki na karticah enot nista ista fotografija (${cardImgs.join(", ")})`);
 for (const c of cards) need(/class="unit-cap"/.test(c), "kartica enote ima napis, kaj slika prikazuje");
 
+/* 9. stran oglašuje dva naslova v Gribljah. Kadar ena lokacija izgubi slike ali svoj pogled,
+      gost v meniju vidi prazen naslov — zato se mora pogodba med podatki in pogledi preizkusiti. */
+const galE = [...js.matchAll(/\{f:"([\w-]+)",\s*g:"([\w-]+)"(?:,\s*lok:"([\w-]+)")?/g)]
+  .map(m => ({ f: m[1], g: m[2], lok: m[3] || "70" }));
+need(galE.length === names.length, `vseh ${names.length} fotografij je razčlenjenih z oznako vsebine`);
+
+const lokiSrc = (js.match(/const LOKI = \[[\s\S]*?\n\];/) || [""])[0];
+const loki = [...lokiSrc.matchAll(/id:\s*"([\w-]+)",\s*naslov:\s*"([^"]+)",\s*pogled:\s*"([\w-]+)"/g)]
+  .map(m => ({ id: m[1], naslov: m[2], pogled: m[3] }));
+need(loki.length === 2, `ponudba ima ${loki.length} naslova`);
+
+const znani = new Set([...loki.map(l => l.id), "reka"]);
+for (const g of galE) need(znani.has(g.lok), `${g.f}: lokacija "${g.lok}" je napovedana v LOKI`);
+
+for (const l of loki) {
+  const n = galE.filter(g => g.lok === l.id).length;
+  need(n >= 6, `${l.naslov} ima ${n} fotografij v arhivu`);
+  need(new RegExp(`\\b${l.pogled}:\\s*\\{`).test(js), `${l.naslov}: pogled "${l.pogled}" obstaja`);
+  const o = (js.match(/const ORDER = \[([^\]]*)\]/) || ["", ""])[1];
+  need(o.includes(`"${l.pogled}"`), `${l.naslov} je v glavnem meniju`);
+}
+
+const vArhivu = new Set(galE.map(g => g.f));
+for (const m of lokiSrc.matchAll(/(?:zunanja|notranja):\s*\[([^\]]*)\]/g))
+  for (const n of m[1].split(",").map(s => s.trim().replace(/^"|"$/g, "")).filter(Boolean))
+    need(vArhivu.has(n), `kartica lokacije kaže na ${n}, ki je v arhivu`);
+for (const m of lokiSrc.matchAll(/slika:\s*"([\w-]+)"/g))
+  need(vArhivu.has(m[1]), `naslovna fotografija lokacije ${m[1]} je v arhivu`);
+
+const opcije = (js.match(/const ENOTE_OPTS = \[([\s\S]*?)\n\];/) || ["", ""])[1];
+for (const l of loki) need(opcije.includes(l.naslov), `obrazec ponuja enote na naslovu ${l.naslov}`);
+need(/b\.dataset\.lok !== galLok/.test(js), "galerija filtrira hkrati po vsebini in po lokaciji");
+need(/id="galEmpty"/.test(js) && /class="gal-empty"/.test(js), "prazna kombinacija filtrov je napovedana");
+
+/* 10. glava mora obljubiti obe nastanitvi, sicer delitelj na Facebooku pokaže staro ponudbo */
+need((html.match(/"@type":"LodgingBusiness"/g) || []).length === loki.length,
+  `JSON-LD napove ${loki.length} nastanitvi`);
+for (const l of loki) need(html.includes(l.naslov), `glava vsebuje naslov ${l.naslov}`);
+need((html.match(/GeoCoordinates/g) || []).length === 1,
+  "geografske koordinate ima samo naslov, ki jih ima potrjene");
+
 console.log(ok.map(m => "  OK  " + m).join("\n"));
 if (bad.length) console.log("\n" + bad.map(m => "  NAP " + m).join("\n"));
 console.log(bad.length ? `\nZAPRT: ${bad.length} napak` : `\nODPRTO: ${ok.length} preizkusov uspelo`);

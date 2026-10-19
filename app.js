@@ -30,7 +30,9 @@ const ic = {
   kitchen:'<svg viewBox="0 0 24 24" fill="none"><path d="M7 3v8a2.5 2.5 0 0 0 5 0V3M9.5 11v10M17 3c-1.5 2-2 3.5-2 6h4c0-2.5-.5-4-2-6zM17 9v12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>'
 };
 
-/* Fotografije so iz lastnega arhiva nastanitve. w/h je prava velikost datoteke v px. */
+/* Fotografije so iz lastnega arhiva nastanitve. w/h je prava velikost datoteke v px.
+   lok pove, na katerem naslovu je posnetek: 70, 30b ali reka. Vpis je samo tam, kjer
+   odstopa od 70, ker je večina arhiva iz Gribljah 70; LOK() spodaj doda privzetek. */
 const GAL = [
   {f:"terasa-studio",  g:"vrt",   w:1600, h:720,  t:"Pokrita terasa z jedilno mizo in kotom za sprostitev"},
   {f:"letna-kuhinja",  g:"vrt",   w:1600, h:732,  t:"Letna kuhinja pod lesenim nadstreškom"},
@@ -57,14 +59,77 @@ const GAL = [
   {f:"noc",            g:"izkus", w:720,  h:1600, t:"Masažna kad na lesenem odru ob mraku"},
   {f:"vrt-lezniki",    g:"izkus", w:1080, h:570,  t:"Dva ležalnika pred masažno kadjo"},
   {f:"uta-noc",        g:"izkus", w:1600, h:720,  t:"Uta zvečer, čez vrt poteka vrsta lučk"},
-  {f:"reka-01",        g:"reka",  w:900,  h:600,  t:"Reka Kolpa poleti z naravnim kopališčem"},
-  {f:"reka-02",        g:"reka",  w:900,  h:600,  t:"Kopanje v Kolpi"},
-  {f:"reka-03",        g:"reka",  w:900,  h:758,  t:"Brisače in senca na rečnem bregu"},
-  {f:"reka-04",        g:"reka",  w:900,  h:491,  t:"Kajak po Kolpi"},
-  {f:"reka-05",        g:"reka",  w:900,  h:600,  t:"Skok v reko z naravne police"},
-  {f:"reka-06",        g:"reka",  w:900,  h:900,  t:"Plitvina, kjer voda seže do pasu"},
-  {f:"reka-07",        g:"reka",  w:900,  h:531,  t:"Naravni vodni tobogan"},
-  {f:"reka-08",        g:"reka",  w:900,  h:900,  t:"Prodnat breg s pogledom na nasprotno stran"}
+  {f:"zunanjost-30b",  g:"vrt",   lok:"30b", w:1600, h:721, t:"Hiša z masažno kadjo pod nadstreškom"},
+  {f:"travnik-30b",    g:"vrt",   lok:"30b", w:1600, h:900, t:"Travnik pred hišo z nogometnimi vrati in ležalniki"},
+  {f:"kopalnica-30b",  g:"noter", lok:"30b", w:861,  h:1600, t:"Kopalnica s tušem, umivalnikom in strojem za perilo"},
+  {f:"soba-30b-a",     g:"noter", lok:"30b", w:1092, h:1441, t:"Spalnica z zakonsko posteljo in omaro"},
+  {f:"soba-30b-b",     g:"noter", lok:"30b", w:1051, h:1496, t:"Druga spalnica z zakonsko posteljo"},
+  {f:"soba-30b-c",     g:"noter", lok:"30b", w:1600, h:805,  t:"Soba z zakonsko in enojno posteljo"},
+  {f:"kuhinja-30b",    g:"noter", lok:"30b", w:1080, h:1457, t:"Kuhinja z jedilno mizo za štiri"},
+  {f:"hodnik-30b",     g:"noter", lok:"30b", w:937,  h:1359, t:"Predprostor z omaro za obutev in ogledalom"},
+  {f:"reka-01",        g:"reka",  lok:"reka", w:900,  h:600,  t:"Reka Kolpa poleti z naravnim kopališčem"},
+  {f:"reka-02",        g:"reka",  lok:"reka", w:900,  h:600,  t:"Kopanje v Kolpi"},
+  {f:"reka-03",        g:"reka",  lok:"reka", w:900,  h:758,  t:"Brisače in senca na rečnem bregu"},
+  {f:"reka-04",        g:"reka",  lok:"reka", w:900,  h:491,  t:"Kajak po Kolpi"},
+  {f:"reka-05",        g:"reka",  lok:"reka", w:900,  h:600,  t:"Skok v reko z naravne police"},
+  {f:"reka-06",        g:"reka",  lok:"reka", w:900,  h:900,  t:"Plitvina, kjer voda seže do pasu"},
+  {f:"reka-07",        g:"reka",  lok:"reka", w:900,  h:531,  t:"Naravni vodni tobogan"},
+  {f:"reka-08",        g:"reka",  lok:"reka", w:900,  h:900,  t:"Prodnat breg s pogledom na nasprotno stran"}
+];
+
+const LOKI = [
+  {
+    id: "70", naslov: "Griblje 70", pogled: "units",
+    address: "Griblje 70, SI-8332 Gradac",
+    map: "https://www.google.com/maps/search/?api=1&query=Griblje+70+8332+Gradac+Slovenija",
+    booking: "https://www.booking.com/hotel/si/holiday-house-kolpa.sl.html",
+    enote: "dva apartmaja · 7 in 5 oseb",
+    glava: "Prenovljena hiša z dvema enotama",
+    lede: "Ločena vhoda in terasi, skupen ograjen vrt s pergolo, letno kuhinjo in masažno kadjo. " +
+          "Do naravnega kopališča na Kolpi je deset minut hoje po ravni poti.",
+    facts: [["2","samostojni enoti"],["7 + 5","oseb"],["10 min","hoje do reke"],["10 / 10","8 mnenj"]],
+    zunanja: ["terasa-pregled", "letna-kuhinja"],
+    notranja: ["noter-01", "soba-main", "soba-otroci", "noter-03", "hodnik-kisa", "soba-kisa"],
+    slika: "terasa-pregled"
+  },
+  {
+    id: "30b", naslov: "Griblje 30 b", pogled: "p30",
+    address: "Griblje 30 b, SI-8332 Gradac",
+    map: "https://www.google.com/maps/search/?api=1&query=Griblje+30+b+8332+Gradac+Slovenija",
+    booking: "",
+    enote: "dva apartmaja",
+    glava: "Hiša s teraso, kadjo in travnikom",
+    lede: "Nadstrešena terasa z masažno kadjo, travnik z nogometnimi vrati in urejeni apartmaji. " +
+          "Razpored ležišč po enotah in razpoložljivost potrdimo ob povpraševanju.",
+    facts: [["2","samostojni enoti"],["kad","pod nadstreškom"],["travnik","z nogometnimi vrati"],["tuš","in pralni stroj"]],
+    zunanja: ["zunanjost-30b", "travnik-30b"],
+    notranja: ["soba-30b-a", "soba-30b-b", "soba-30b-c", "kuhinja-30b", "kopalnica-30b", "hodnik-30b"],
+    slika: "zunanjost-30b"
+  }
+];
+
+/* Privzetek je namenoma izrecen: večina arhiva je iz Gribljah 70, novejši vpisi nosijo lok.
+   Reka ni naslov, ampak skupna vsebina obeh hiš, zato nosi lastno oznako. */
+const LOK = g => g.lok || "70";
+const LOK_N = Object.fromEntries([["reka", "Reka Kolpa"], ...LOKI.map(l => [l.id, l.naslov])]);
+const GAL_ŠT = id => GAL.filter(g => LOK(g) === id).length;
+
+/* Reka ni naslov, ampak skupna vsebina obeh hiš, zato ima svojo vrstico vsebin in ne lokacije. */
+const LOK_TABS = [
+  {id:"vse", label:"Obe hiši"},
+  {id:"70", label:"Griblje 70"},
+  {id:"30b", label:"Griblje 30 b"}
+];
+
+/* Enote, ki jih sme obrazec ponuditi. Pri 30 b števila oseb ne vemo, zato je zapisan
+   samo naslov — gost naj razpored preveri, ne da bi ga stran obljubila. */
+const ENOTE_OPTS = [
+  "Griblje 70 — apartma za 7 oseb",
+  "Griblje 70 — studio za 5 oseb",
+  "Griblje 70 — oba apartmaja",
+  "Griblje 30 b — en apartma",
+  "Griblje 30 b — oba apartmaja",
+  "Še ne vem — svetujte"
 ];
 
 const TABS = [
@@ -128,11 +193,12 @@ const RULES = [
 ];
 
 const FAQ = [
-  ["Koliko gostov se namesti?", "V apartmaju je sedem ležišč v dveh spalnicah, v studiu pa do petih. Če potujeta dve družini, sta na voljo obe enoti hkrati."],
+  ["Koliko gostov se namesti?", "V Gribljah 70 je apartma s sedmimi ležišči v dveh spalnicah in studio za do pet oseb. V Gribljah 30 b sta dva apartmaja, njuna razpored ležišč pa potrdimo ob povpraševanju. Za večje skupine so na voljo vse štiri enote hkrati."],
   ["Ali imate bazen?", "Ne. Namesto bazena je reka — naravno kopališče v Kolpi je deset minut hoje po ravni poti. Na vrtu je jacuzzi, ki je na voljo proti doplačilu."],
   ["Ali je parkirišče brezplačno?", "Da. Brezplačno zasebno parkirišče je tik ob hiši in ga ni treba rezervirati."],
   ["Kdaj je najboljši termin?", "Od maja do septembra je voda prijetno topla in dnevi dolgi. Jeseni je pokrajina barvita in mirna, pozimi pa se hiša ogreva s klimatsko napravo in štedilnikom na drva."],
-  ["Kako do vas?", "Griblje so na cesti med Metliko in Gradcem, blizu mejnega prehoda s Hrvaško. Natančen naslov in zemljevid dobite ob potrditvi rezervacije."]
+  ["Kako do vas?", "Griblje so na cesti med Metliko in Gradcem, blizu mejnega prehoda s Hrvaško. Natančen naslov in zemljevid izbrane hiše dobite ob potrditvi rezervacije."],
+  ["Sta oba naslova ena nastanitev?", "Ne. Griblje 70 in Griblje 30 b sta dve ločeni hiši v istem kraju, vsaka s svojima apartmajema. Pri povpraševanju navedite, katero hišo želite — če je zasedena, preverimo še razpoložljivost v drugi."]
 ];
 
 /* ── pomožne funkcije ──────────────────────── */
@@ -153,13 +219,20 @@ function door(view, title, sub, photo) {
     <span><b>${title}</b><i>${sub}</i></span></button>`;
 }
 
-function doorLink(href, title, sub, photo) {
-  return `<a class="door" href="${href}" target="_blank" rel="noopener">
-    ${img(photo, "")}
-    <span><b>${title}</b><i>${sub}</i></span></a>`;
-}
-
 function fact(n, l) { return `<div class="fact"><b>${n}</b><span>${l}</span></div>`; }
+
+/* Prehod med hišama: obe lokaciji morata biti na dosegu enega klika, sicer gost
+   pomoti enega naslova za drug in rezervira napačno hišo. */
+function xlink(lok, dodatni) {
+  const sama = LOKI.find(l => l.id === lok);
+  const druga = LOKI.find(l => l.id !== lok);
+  return `<div class="xlink">
+    <button class="btn btn-ghost" data-go="${druga.pogled}" data-flat="1">Druga hiša: ${druga.naslov}</button>
+    <button class="btn btn-ghost" data-go="gallery" data-flat="1" data-glok="${lok}">Fotografije ${sama.naslov}</button>
+    ${dodatni ? `<button class="btn btn-ghost" data-go="${dodatni[1]}" data-flat="1">${dodatni[0]}</button>` : ""}
+    <a class="btn btn-ghost" href="${sama.map}" target="_blank" rel="noopener">Zemljevid ${sama.naslov}</a>
+  </div>`;
+}
 
 function stripCard(icon, tag, title, text, photo, view, tab) {
   return `<button class="card" data-go="${view}" data-flat="1"${tab ? ` data-gtab="${tab}"` : ""}>${img(photo, "")}
@@ -187,7 +260,7 @@ const HERO_SHOTS = ["terasa-studio", "jacuzzi-terasa", "letna-kuhinja"];
 const VIEWS = {
   home: {
     label: "Domov",
-    title: "River Kolpa Apartments — dva apartmaja ob Kolpi, Griblje",
+    title: "River Kolpa Apartments — dve hiši ob reki Kolpi, Griblje",
     render: () => `
     <div class="hero">
       ${HERO_SHOTS.map((s, i) => `<img class="${i === 0 ? "lead on" : `off${i}`}" src="assets/${s}.webp" alt="${i === 0 ? "Pokrita terasa River Kolpa Apartments v Gribljah" : ""}" ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy" aria-hidden="true"'} decoding="async">`).join("")}
@@ -198,21 +271,21 @@ const VIEWS = {
         <div class="home-title">
           <p class="eyebrow" data-rv style="--d:80ms">Griblje · Bela krajina · Slovenija</p>
           <h1 class="big" tabindex="-1">
-            <span class="mask" style="--d:180ms"><span>Dva apartmaja</span></span>
+            <span class="mask" style="--d:180ms"><span>Dve hiši</span></span>
             <span class="mask" style="--d:320ms"><span>ob reki <em class="uline">Kolpi<svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M4 8.6C42 3.4 96 2.2 196 6.4" pathLength="100"/></svg></em></span></span>
           </h1>
-          <p class="lede" data-rv style="--d:520ms">Prenovljena hiša z dvema samostojnima enotama: apartma za sedem
-          in studio za pet oseb, vsak s svojo teraso. Skupen urejen vrt z jacuzzijem in
-          letno kuhinjo, deset minut hoje do reke, ki je poleti najtoplejša v Sloveniji.</p>
+          <p class="lede" data-rv style="--d:520ms">Štirje samostojni apartmaji v dveh hišah v Gribljah ob reki Kolpi.
+          Vsaka hiša ima teraso, masažno kad in urejen vrt, obe pa vodi ista gostiteljica —
+          izberite tisto, ki je prosta v vašem terminu.</p>
           <div class="chips" data-rv style="--d:640ms">
-            <span class="chip"><b>7 + 5</b> oseb</span>
-            <span class="chip"><b>10 min</b> hoje do reke</span>
-            <span class="chip"><b>Jacuzzi</b> in letna kuhinja</span>
+            <span class="chip"><b>4</b> apartmaji v dveh hišah</span>
+            <span class="chip"><b>2</b> naslova v Gribljah</span>
+            <span class="chip"><b>Masažna kad</b> in urejen vrt</span>
             <span class="chip"><b>10 / 10</b> · 8 mnenj</span>
           </div>
           <div class="cta-row" data-rv style="--d:760ms">
             <button class="btn btn-solid" data-go="booking" data-flat="1">Preverite proste termine</button>
-            <button class="btn btn-ghost" data-go="gallery" data-flat="1">Poglejte fotografije</button>
+            <button class="btn btn-ghost" data-go="places" data-flat="1">Izberite hišo</button>
           </div>
         </div>
         <aside class="home-aside">
@@ -222,26 +295,62 @@ const VIEWS = {
         </aside>
       </div>
       <div class="doors" data-rv style="--d:900ms">
+        ${door("places","Lokaciji","Griblje 70 in Griblje 30 b","zunanjost-30b")}
         ${door("garden","Vrt in jacuzzi","Terasa, žar, letna kuhinja","jacuzzi-terasa")}
         ${door("river","Reka Kolpa","Kopališče deset minut hoje","reka-01")}
         ${door("area","Okolica","Vasi, kleti in poti","reka-04")}
         ${door("gallery","Galerija",`${GAL.length} fotografij`,"noter-01")}
         ${door("booking","Prosti termini","Povpraševanje in kontakt","noc")}
-        ${doorLink(INFO.map,"Kje smo","Griblje 70 · zemljevid","gugal")}
       </div>
     </div>`
   },
 
+  places: {
+    label: "Lokaciji",
+    title: "Lokaciji — River Kolpa Apartments",
+    render: () => `
+    ${amb()}
+    <div class="col">
+      <div data-rv style="--d:60ms">
+        <p class="eyebrow">Dva naslovov</p>
+        <h2 class="mid" tabindex="-1" style="margin:12px 0 8px">Ista zasnova, dve hiši</h2>
+        <p class="lede">Majda Pezdirc gosti v dveh hišah v Gribljah, vsaka z dvema samostojnima
+        apartmajema. Obe imata teraso, masažno kad in urejen vrt, zato je izkušnja
+        enaka — razlikujeta se razpored prostorov in zunanjost.</p>
+      </div>
+      <div class="places" data-rv style="--d:200ms">
+        ${LOKI.map(l => `
+        <article class="place">
+          ${img(l.slika, l.glava)}
+          <div class="place-body">
+            <p class="place-kicker">${l.naslov}</p>
+            <h3>${l.glava}</h3>
+            <p class="place-meta">${l.enote} · ${galCount(GAL_ŠT(l.id))} v galeriji</p>
+            <p class="place-lede">${l.lede}</p>
+            <div class="facts place-facts">${l.facts.map(f => fact(f[0], f[1])).join("")}</div>
+            <div class="place-cta">
+              <button class="btn btn-solid" data-go="${l.pogled}" data-flat="1">Oglejte si hišo</button>
+              <button class="btn btn-ghost" data-go="gallery" data-flat="1" data-glok="${l.id}">Fotografije</button>
+              <a class="btn btn-ghost" href="${l.map}" target="_blank" rel="noopener">Zemljevid</a>
+            </div>
+          </div>
+        </article>`).join("")}
+      </div>
+      <p class="fineprint" data-rv style="--d:300ms">Obe hiši sta v istem kraju, vsaka ima svoj vstop in svoj travnik.
+      Natančen naslov izbrane hiše pošljemo ob potrditvi rezervacije.</p>
+    </div>`
+  },
+
   units: {
-    label: "Apartmaja",
-    title: "Apartmaja — River Kolpa Apartments",
+    label: "Griblje 70",
+    title: "Griblje 70 — dva apartmaja — River Kolpa Apartments",
     render: () => `
     ${amb()}
     <div class="units-wrap">
-    <p class="eyebrow" data-rv style="--d:60ms">Nastanitev</p>
+    <p class="eyebrow" data-rv style="--d:60ms">Nastanitev · ${LOKI[0].naslov}</p>
     <h2 class="mid" tabindex="-1" data-rv style="margin:12px 0 8px;--d:140ms">Dva samostojna apartmaja</h2>
-    <p class="lede" data-rv style="--d:240ms">Hiša ima dve samostojni enoti, vsaka s svojim vhodom in svojo teraso.
-    Spodaj sta razpored ležišč in opis opreme posamezne enote.</p>
+    <p class="lede" data-rv style="--d:240ms">Prenovljena hiša ima dve samostojni enoti, vsaka s svojim vhodom in
+    svojo teraso. Spodaj sta razpored ležišč in opis opreme posamezne enote.</p>
     <div class="unitcols" data-rv style="--d:340ms">
       <article class="unit">
         ${img("noter-01","Odprt dnevni prostor z jedilnico in kuhinjo")}
@@ -279,7 +388,31 @@ const VIEWS = {
       </article>
     </div>
     <div class="amenbar">${AMEN.map(a=>`<div>${a[0]}<span>${a[1]}</span></div>`).join("")}</div>
+    ${xlink("70", ["Vrt in jacuzzi", "garden"])}
     </div>`
+  },
+
+  p30: {
+    label: "Griblje 30 b",
+    title: "Griblje 30 b — dva apartmaja — River Kolpa Apartments",
+    render: () => {
+      const l = LOKI.find(x => x.id === "30b");
+      return `
+    ${amb()}
+    <div class="units-wrap">
+    <p class="eyebrow" data-rv style="--d:60ms">Nastanitev · ${l.naslov}</p>
+    <h2 class="mid" tabindex="-1" data-rv style="margin:12px 0 8px;--d:140ms">${l.glava}</h2>
+    <p class="lede" data-rv style="--d:240ms">${l.lede}</p>
+    <div class="placegrid" data-rv style="--d:340ms">
+      ${l.notranja.map(f => `<figure class="ph">${img(f, GAL.find(g => g.f === f).t)}<figcaption>${GAL.find(g => g.f === f).t}</figcaption></figure>`).join("")}
+    </div>
+    <div class="facts" data-rv style="--d:420ms">${l.facts.map(f => fact(f[0], f[1])).join("")}</div>
+    <p class="fineprint" data-rv style="--d:500ms">Fotografije nastanitev v Gribljah 30 b so iz našega arhiva.
+    Kateri apartma je prost in koliko oseb sprejme, preverimo ob povpraševanju — razporeda,
+    ki ga nimamo potrjenega, na strani ne objavljamo.</p>
+    ${xlink("30b")}
+    </div>`;
+    }
   },
 
   garden: {
@@ -293,11 +426,11 @@ const VIEWS = {
         <figure class="figure">${img("jacuzzi-terasa","Vrt z masažno kadjo in žarom")}<figcaption>Masažna kad in žar</figcaption></figure>
       </div>
       <div class="copy">
-        <p class="eyebrow" data-rv style="--d:60ms">Zunaj</p>
+        <p class="eyebrow" data-rv style="--d:60ms">${LOKI[0].naslov} · Zunaj</p>
         <h2 class="mid" tabindex="-1" data-rv style="--d:140ms">Večer, ki se ne konča</h2>
-        <p class="lede" data-rv style="--d:240ms">Pod pergolo je dolga miza za osem, ob njej letna kuhinja s
-        štedilnikom na drva in hladilnikom. Za vogalom je masažna kad, naprej pa
-        travnik s trambolinom in nogometnimi vrati — otroci so vidni s terase.</p>
+        <p class="lede" data-rv style="--d:240ms">Pod pergolo z belimi zavesami je dolga miza, ob njej letna
+        kuhinja s ploščo za kuho in umivalnikom. Za vogalom sta žar in masažna kad, naprej pa urejena
+        trata z dvema ležalnikoma in gugalnim kokonom med bršljanom — vse blizu terase.</p>
         <div class="facts" data-rv style="--d:340ms">
           ${fact("8","pri mizi pod pergolo")}
           ${fact("6","oseb v jacuzziju")}
@@ -306,6 +439,7 @@ const VIEWS = {
         </div>
         <p class="fineprint">Jacuzzi je na voljo proti doplačilu; dogovorimo se ob rezervaciji,
         da ga pred prihodom ogrejemo.</p>
+        ${xlink("70")}
       </div>
     </div>`
   },
@@ -382,12 +516,21 @@ const VIEWS = {
           <p class="eyebrow" id="galMeta">${galCount(GAL.length)} iz lastnega arhiva</p>
           <h2 class="mid" tabindex="-1" style="margin:10px 0 4px">Pogled naokoli</h2>
         </div>
-        <div class="tabs" role="group" aria-label="Filtriraj fotografije">
-          ${TABS.map((t,i)=>`<button class="tab${i===0?" on":""}" data-tab="${t.id}" aria-pressed="${i===0}">${t.label}</button>`).join("")}
+        <div class="tabsets">
+          <div class="tabs" id="galLoks" role="group" aria-label="Filtriraj fotografije po hiši">
+            ${LOK_TABS.map((t,i)=>`<button class="tab${i===0?" on":""}" data-lok="${t.id}" aria-pressed="${i===0}">${t.label}</button>`).join("")}
+          </div>
+          <div class="tabs" id="galTabs" role="group" aria-label="Filtriraj fotografije po vsebini">
+            ${TABS.map((t,i)=>`<button class="tab${i===0?" on":""}" data-tab="${t.id}" aria-pressed="${i===0}">${t.label}</button>`).join("")}
+          </div>
         </div>
       </div>
-      <div class="gal" id="gal" data-tab="vse" data-rv style="--d:180ms">
-        ${GAL.map((g,i)=>`<button data-lb="${i}" data-g="${g.g}" aria-label="Odpri fotografijo: ${g.t}">
+      <div class="gal-empty" id="galEmpty" hidden>
+        <p id="galEmptyTxt"></p>
+        <button class="btn btn-ghost" id="galReset">Pokaži vse fotografije</button>
+      </div>
+      <div class="gal" id="gal" data-tab="vse" data-lok="vse" data-rv style="--d:180ms">
+        ${GAL.map((g,i)=>`<button data-lb="${i}" data-g="${g.g}" data-lok="${LOK(g)}" aria-label="Odpri fotografijo: ${g.t}">
           ${img(g.f, g.t)}
         </button>`).join("")}
       </div>
@@ -405,13 +548,13 @@ const VIEWS = {
         <h2 class="mid" tabindex="-1" data-rv style="--d:140ms">Preverite proste termine</h2>
         <p class="lede" data-rv style="--d:240ms">Najhitreje po telefonu ali prek WhatsAppa. Cene so odvisne od
         termina in števila oseb, zato jih ne objavljamo naslepo — pošljite povpraševanje
-        ali preverite razpoložljivost na Booking.com.</p>
+        ali preverite razpoložljivost hiše v Gribljah 70 na Booking.com.</p>
         <div class="contact-list" data-rv style="--d:340ms">
           <a href="tel:${INFO.phone}">${ic.phone}<span>${INFO.phoneTxt}</span><small>Pokličite</small></a>
           <a id="waLink" href="${waHref()}" target="_blank" rel="noopener">${ic.chat}<span>WhatsApp</span><small>Odgovor v nekaj urah</small></a>
           <a href="mailto:${INFO.email}">${ic.mail}<span>${INFO.email}</span><small>E-pošta</small></a>
-          <a href="${INFO.booking}" target="_blank" rel="noopener">${ic.star}<span>Booking.com</span><small>Razpoložljivost</small></a>
-          <a href="${INFO.map}" target="_blank" rel="noopener">${ic.pin}<span>${INFO.address}</span><small>Zemljevid</small></a>
+          <a href="${INFO.booking}" target="_blank" rel="noopener">${ic.star}<span>Booking.com</span><small>${LOKI[0].naslov}</small></a>
+          ${LOKI.map(l => `<a href="${l.map}" target="_blank" rel="noopener">${ic.pin}<span>${l.address}</span><small>Zemljevid</small></a>`).join("")}
         </div>
         <div class="score" data-rv style="--d:440ms">
           <div class="score-num"><b>${REVIEWS.score}</b><span>od 10 · ${REVIEWS.count}</span></div>
@@ -424,14 +567,15 @@ const VIEWS = {
         <form class="form" id="rfq" novalidate>
           <h3>Povpraševanje</h3>
           <p class="note">Izpolnite obrazec in odprl se bo vaš e-poštni program ali WhatsApp s
-          pripravljenim sporočilom. Odgovorimo v nekaj urah.</p>
+          pripravljenim sporočilom. Pri enoti navedite hišo — Griblje 70 ali Griblje 30 b —
+          da vam takoj odgovorimo z razpoložljivostjo prav te hiše. Odgovorimo v nekaj urah.</p>
           <div class="fgrid">
             <label>Ime in priimek<input name="ime" required placeholder="Janez Novak"></label>
             <label>Telefon ali e-pošta<input name="kontakt" required placeholder="041 234 567"></label>
             <label>Prihod<input name="prihod" type="date" required></label>
             <label>Odhod<input name="odhod" type="date" required></label>
             <label>Število oseb<select name="osebe">${[1,2,3,4,5,6,7,8].map(n=>`<option${n===4?" selected":""}>${n}</option>`).join("")}</select></label>
-            <label>Enota<select name="enota"><option>Apartma za 7 oseb</option><option>Studio za 5 oseb</option><option>Obe enoti</option><option>Še ne vem</option></select></label>
+            <label>Enota<select name="enota">${ENOTE_OPTS.map(o=>`<option>${o}</option>`).join("")}</select></label>
           </div>
           <label style="margin-top:12px">Sporočilo<textarea name="spor" placeholder="Zanima naju termin v juliju, prihajava z dvema otrokoma in psom."></textarea></label>
           <div class="submit-row">
@@ -456,7 +600,7 @@ const VIEWS = {
   }
 };
 
-const ORDER = ["units","garden","river","area","gallery"];
+const ORDER = ["places","units","p30","river","area","gallery"];
 
 /* ── sporočilo za povpraševanje ────────────── */
 const slDate = (s) => s ? `${+s.slice(8, 10)}. ${+s.slice(5, 7)}. ${+s.slice(0, 4)}` : "";
@@ -632,7 +776,7 @@ function galLayout() {
   const flow = parseFloat(cs.flexGrow) <= 0;
   const W = Math.round(gal.clientWidth);
   const H = cap || flow ? Infinity : Math.max(240, gal.clientHeight);
-  const key = `${W}x${H}x${gal.dataset.tab}x${vis.length}x${cap}`;
+  const key = `${W}x${H}x${gal.dataset.tab}x${gal.dataset.lok}x${vis.length}x${cap}`;
   if (key === gal._key) return;
   gal._key = key;
 
@@ -669,24 +813,44 @@ function galLayout() {
 }
 
 let galTab = "vse";
+let galLok = "vse";
 
-function galFilter(tab) {
+function galFilter() {
   const gal = document.getElementById("gal");
   if (!gal) return;
-  galTab = tab;
-  gal.dataset.tab = tab;
-  gal.parentElement.querySelectorAll(".tab").forEach(b => {
-    const on = b.dataset.tab === tab;
-    b.classList.toggle("on", on);
-    b.setAttribute("aria-pressed", String(on));
-  });
+  gal.dataset.tab = galTab;
+  gal.dataset.lok = galLok;
+  const chips = (id, key, val) => {
+    const row = document.getElementById(id);
+    if (!row) return;
+    row.querySelectorAll(".tab").forEach(b => {
+      const on = b.dataset[key] === val;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", String(on));
+    });
+  };
+  chips("galTabs", "tab", galTab);
+  chips("galLoks", "lok", galLok);
   let n = 0;
   gal.querySelectorAll("button").forEach(b => {
-    b.hidden = tab !== "vse" && b.dataset.g !== tab;
+    b.hidden = (galTab !== "vse" && b.dataset.g !== galTab) ||
+               (galLok !== "vse" && b.dataset.lok !== galLok);
     if (!b.hidden) n++;
   });
+  /* prazna kombinacija je velaven odgovor, ne napaka: brez sporočila se zdi, da galerija ni naložila */
+  const empty = document.getElementById("galEmpty");
+  if (empty) {
+    empty.hidden = n > 0;
+    if (!n) {
+      const drugje = GAL.filter(g => (galTab === "vse" || g.g === galTab) &&
+                                     (galLok === "vse" || LOK(g) !== galLok)).length;
+      document.getElementById("galEmptyTxt").textContent =
+        `Za ${LOK_N[galLok]} te vsebine v arhivu še ni.` +
+        (drugje ? ` Drugje imamo ${galCount(drugje)}.` : "");
+    }
+  }
   const meta = document.getElementById("galMeta");
-  if (meta) meta.textContent = `${galCount(n)} iz lastnega arhiva`;
+  if (meta) meta.textContent = n ? `${galCount(n)} iz lastnega arhiva` : "v tej izbiri ni fotografij";
   gal._key = "";
   galLayout();
 }
@@ -696,13 +860,18 @@ function wireGallery() {
   if (!gal) return;
   if (!gal.dataset.wired) {
     gal.dataset.wired = "1";
-    gal.parentElement.querySelector(".tabs").addEventListener("click", e => {
+    gal.parentElement.querySelector(".tabsets").addEventListener("click", e => {
       const t = e.target.closest("[data-tab]");
-      if (t) galFilter(t.dataset.tab);
+      if (t) { galTab = t.dataset.tab; galFilter(); return; }
+      const l = e.target.closest("[data-lok]");
+      if (l) { galLok = l.dataset.lok; galFilter(); }
     });
     new ResizeObserver(() => galLayout()).observe(gal);
+    document.getElementById("galReset").addEventListener("click", () => {
+      galTab = "vse"; galLok = "vse"; galFilter();
+    });
   }
-  galFilter(galTab);
+  galFilter();
 }
 
 function wireForm() {
@@ -776,7 +945,7 @@ function showLb(i) {
   const g = lbList[lbi];
   lbImg.src = `assets/${g.f}.jpg`;
   lbImg.alt = g.t;
-  lbCap.textContent = `${lbi + 1} / ${lbList.length} — ${g.t}`;
+  lbCap.textContent = `${lbi + 1} / ${lbList.length} — ${g.t}${LOK(g) !== "70" ? ` · ${LOK_N[LOK(g)]}` : ""}`;
   /* naslednja se naloži šele, ko je trenutna na zaslonu, da z njo ne tekmuje za pas */
   lbImg.onload = () => { new Image().src = `assets/${lbList[(lbi + 1) % lbList.length].f}.jpg`; };
 }
@@ -802,6 +971,7 @@ document.addEventListener("click", e => {
   if (g) {
     e.preventDefault();
     if (g.dataset.gtab) galTab = g.dataset.gtab;
+    if (g.dataset.glok) galLok = g.dataset.glok;
     go(g.dataset.go, g.dataset.flat === "1");
   }
 });
