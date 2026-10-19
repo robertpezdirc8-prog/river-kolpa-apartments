@@ -7,7 +7,7 @@ const ROOT = dirname(fileURLToPath(import.meta.url));
 const read = f => readFileSync(join(ROOT, f), "utf8");
 const html = read("index.html"), css = read("styles.css"), js = read("app.js");
 const SITE = "https://robertpezdirc8-prog.github.io/river-kolpa-apartments/";
-const MAX_KB = { tile: 220, full: 420 };
+const MAX_KB = { tile: 220, full: 420, font: 60 };
 
 const ok = [], bad = [];
 const pass = m => ok.push(m);
@@ -48,7 +48,30 @@ for (const f of readdirSync(join(ROOT, "assets")).filter(x => /\.(webp|jpg)$/.te
 
 /* 6. thing, ki ga Pages pokvari: relativna pot do sredstva v glavi */
 need(/href="styles\.css"/.test(html), "slovnica je relativna (mora biti, zaradi podpoti Pages)");
+need(/href="fonts\.css"/.test(html), "fonts.css je priklopljen");
 need(existsSync(join(ROOT, ".nojekyll")), ".nojekyll prisoten");
+
+/* 7. pisave morajo biti gostovane doma: obiskovalec sme za podatki o sebi povpraševati le pri nas */
+for (const host of ["fonts.googleapis.com", "fonts.gstatic.com"])
+  need(![html, css, js].some(s => s.includes(host)), `nobena referenca na ${host}`);
+const fcss = read("fonts.css");
+const used = new Set([...fcss.matchAll(/url\("(fonts\/[^"]+)"\)/g)].map(m => m[1]));
+need(used.size >= 4, `fonts.css napove ${used.size} datotek`);
+for (const u of used) {
+  const p = join(ROOT, u);
+  need(existsSync(p), u + " obstaja");
+  if (!existsSync(p)) continue;
+  const buf = readFileSync(p);
+  /* pravi začetni bajti so edini dokaz, da git ali kak prepisovalec ni pokvaril binarne datoteke */
+  need(buf.subarray(0, 4).toString("latin1") === "wOF2", `${u}: veljavna glava woff2`);
+  need(buf.length / 1024 <= MAX_KB.font, `${u} ≤ ${MAX_KB.font} kB`);
+}
+const onDisk = readdirSync(join(ROOT, "fonts")).filter(f => f.endsWith(".woff2"));
+for (const f of onDisk) need(used.has(`fonts/${f}`), `fonts/${f} je v fonts.css napovedana`);
+need(onDisk.length > 0 && readdirSync(join(ROOT, "fonts")).some(f => /^OFL-.*\.txt$/.test(f)),
+  "licenca OFL je priložena pisavam");
+for (const m of html.matchAll(/rel="preload"[^>]*href="([\w./-]+\.woff2)"/g))
+  need(existsSync(join(ROOT, m[1])), `prednaložena ${m[1]} obstaja`);
 
 console.log(ok.map(m => "  OK  " + m).join("\n"));
 if (bad.length) console.log("\n" + bad.map(m => "  NAP " + m).join("\n"));

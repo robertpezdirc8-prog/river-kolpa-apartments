@@ -7,7 +7,9 @@ const TYPES = {
   ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8", ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg", ".webp": "image/webp", ".png": "image/png",
-  ".svg": "image/svg+xml", ".ico": "image/x-icon"
+  ".svg": "image/svg+xml", ".ico": "image/x-icon",
+  ".woff2": "font/woff2", ".woff": "font/woff", ".ttf": "font/ttf",
+  ".txt": "text/plain; charset=utf-8", ".xml": "application/xml; charset=utf-8"
 };
 
 const server = createServer(async (req, res) => {
