@@ -415,7 +415,7 @@ const VIEWS = {
       </div>
 
       <div class="side" data-rv style="--d:300ms">
-        <form class="form" id="rfq">
+        <form class="form" id="rfq" novalidate>
           <h3>Povpraševanje</h3>
           <p class="note">Izpolnite obrazec in odprl se bo vaš e-poštni program ali WhatsApp s
           pripravljenim sporočilom. Odgovorimo v nekaj urah.</p>
@@ -723,9 +723,21 @@ function wireForm() {
   };
   f.addEventListener("input", sync);
 
+  /* polje, zaradi katerega obrazec še ne gre ven — vrstni red je enak kot pri veljavnosti */
+  const pokvarjeno = () => ["ime", "kontakt", "prihod", "odhod"].find(n => !f.elements[n].value) ||
+    (f.elements.prihod.value < danes ? "prihod" : f.elements.odhod.value < f.elements.prihod.value ? "odhod" : null);
+
   const send = () => {
-    if (!valid()) { err.hidden = false; return null; }
-    return fields();
+    if (valid()) return fields();
+    err.hidden = false;
+    /* na telefonu se drsi celoten pogled, ne okno: brez drsenja sporočilo ostane pod prstom
+       in kupec ne ve, kaj ga zadržuje. Fokus brez drsenja, sicer tekmuje z zgornjo potezo.
+       Obrazec je novalidate — nativni mehurček bi govoril jezik brskalnika, gumb WhatsApp
+       pa nativnega preverjanja sploh ne sproži, zato bi bilo opozoril dve različici */
+    err.scrollIntoView({ behavior: "smooth", block: "center" });
+    const bad = pokvarjeno();
+    if (bad) f.elements[bad].focus({ preventScroll: true });
+    return null;
   };
   f.addEventListener("submit", e => {
     e.preventDefault();

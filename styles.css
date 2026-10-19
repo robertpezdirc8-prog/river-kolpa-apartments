@@ -361,7 +361,11 @@ textarea{resize:none;min-height:74px}
   .score{grid-template-columns:1fr}
   .submit-row{grid-template-columns:1fr}
   .foot{height:auto;padding:9px var(--pad);flex-wrap:wrap;gap:8px}
-  .foot-right .legal{display:none}
+  /* identifikacija ponudnika mora ostati vidna tudi na telefonu; v eni vrstici z velikimi
+     tiskanimi črkami ni berljiva, zato gre v svojo vrstico in na male črke */
+  .foot-right{flex-wrap:wrap;justify-content:flex-end;gap:6px 14px}
+  .foot-right .legal{flex:1 0 100%;order:3;display:block;white-space:normal;overflow:visible;
+    text-align:center;font-size:8.5px;letter-spacing:.05em;text-transform:none;line-height:1.45}
   .foot .call{display:flex}
   .trail{flex-wrap:wrap}
   input,select,textarea{font-size:16px}
