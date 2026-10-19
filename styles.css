@@ -56,9 +56,12 @@ img{display:block}
 .brand-txt i{font-style:normal;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--sage);margin-top:4px}
 
 .nav{display:flex;align-items:center;gap:2px}
+/* "GRIBLJE 30 B" se je pri ozki vrsti prelomil na dve vrsti in je deloval kot odrezan seznam;
+   pravilo postavitve je nikoli ne prelomiti — prostor naj raje vzame drsenje vrstice */
 .nav button{
   background:none;border:0;cursor:pointer;padding:9px 14px;border-radius:999px;
   font-size:12.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:500;
+  white-space:nowrap;
   color:rgba(245,239,228,.66);transition:color .25s,background .25s;
 }
 .nav button:hover{color:var(--cream);background:rgba(245,239,228,.07)}
@@ -121,7 +124,9 @@ img{display:block}
   font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--cream);transition:border-color .3s}
 .call:hover{border-color:var(--wood-soft)}
 .call svg{width:15px;height:15px;color:var(--wood)}
-.foot-right .legal{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(245,239,228,.76)}
+/* Pravni podatek ne sme nikoli izginiti za tripičjem: če ne ustre v vrstico, se prelomi,
+   ne skrajša. Višino zavihane vrstice vseeno izmeri observer in jo prenese v --fb. */
+.foot-right .legal{white-space:normal;text-align:right;color:rgba(245,239,228,.76)}
 .soc{display:flex;gap:14px;flex:none}
 .soc a{color:rgba(245,239,228,.72);padding:7px 0;transition:color .25s}
 .soc a:hover{color:var(--wood-soft)}
@@ -129,7 +134,10 @@ img{display:block}
 /* ── stage / globina ───────────────────────── */
 .stage{position:fixed;inset:0}
 .view{
-  position:absolute;inset:0;padding:84px var(--pad) calc(var(--bar) + 14px);
+  /* Odmik od glave se računa iz njene dejanske višine, ki jo izmeri ResizeObserver — stalna
+     vrednost je vedno le tolikšna, kolikor je glava tik pred prelomom, zato jo vsaka sprememba
+     menija premakne pod glavo in vsebina uide pod njo. */
+  position:absolute;inset:0;padding:calc(var(--tb,84px) + 16px) var(--pad) calc(var(--bar) + 14px);
   display:flex;flex-direction:column;overflow:hidden;
   transform-origin:50% 46%;will-change:transform,opacity,filter;
   transition:transform var(--dur) var(--ease),opacity var(--dur) var(--ease),filter var(--dur) var(--ease);
@@ -340,8 +348,11 @@ textarea{resize:none;min-height:74px}
 .gal-empty p{margin:0;font-size:14px;line-height:1.55;color:var(--text)}
 
 .places{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px;flex:1;min-height:0;
-  overflow:auto;scrollbar-width:thin;align-content:start}
-.place{position:relative;display:grid;grid-template-rows:minmax(0,196px) auto;border:1px solid var(--line);
+  overflow:auto;scrollbar-width:thin;align-content:start;grid-auto-rows:max-content}
+/* Postopek je enak kot pri .unitcols: vrsta brez spodnje meje se skrči na toliko, kolikor ji ostane
+   prostora, zato se je fotografija stisnila na 46 px in kartica je bila videti odrezana.
+   Vrstica naj ima vsaj svoj minimum. */
+.place{position:relative;display:grid;grid-template-rows:minmax(150px,196px) auto;border:1px solid var(--line);
   border-radius:20px;overflow:hidden;background:#0d241e}
 .place>img{width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
 .place:hover>img{transform:scale(1.04)}
@@ -373,7 +384,6 @@ textarea{resize:none;min-height:74px}
   .door b{font-size:19px}
 }
 @media (max-width:1080px){
-  .nav button{padding:8px 10px;font-size:11px;letter-spacing:.1em}
   .hide-sm{display:none}
   .home-top{grid-template-columns:minmax(0,1fr)}
   .home-aside{display:none}
@@ -381,30 +391,49 @@ textarea{resize:none;min-height:74px}
   .distlist{grid-template-columns:repeat(2,minmax(0,1fr))}
   .placegrid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
-/* Identifikacija ponudnika v nogi ne sme biti okrajšana s tripičjem: od te širine navzdol gre
-   v svojo vrstico, kot na telefonu. Višino zavihane vrstice prevzame --fb, ki ga izmeri
-   ResizeObserver, zato vsebina pod njo ne uide izven zaslona. */
-@media (max-width:1320px) and (min-width:901px){
+/* Identifikacija ponudnika v nogi ne sme biti okrajšana s tripičjem: pod to širino gre v svojo
+   vrstico, kot na telefonu. Višino zavihane vrstice prevzame --fb, ki ga izmeri ResizeObserver,
+   zato vsebina pod njo ne uide izven zaslona.
+   Meja je izmerjena: nad 1470 px pravni stavek skupaj s telefonom in družabnimi povezavami še
+   zleze v eno vrstico, pod njo pa bi se moral ali prelomiti sredi identifikacije, ali pa bi ga
+   CSS okrajšal. Pravnega podatka ne režemo. */
+@media (max-width:1470px) and (min-width:901px){
   .foot{height:auto;padding:9px var(--pad);gap:6px}
   .foot-right{flex-wrap:wrap;justify-content:flex-end;gap:4px 12px}
   .foot-right .legal{flex:1 0 100%;order:3;display:block;white-space:normal;overflow:visible;
     text-align:center;font-size:9.5px;letter-spacing:.05em;text-transform:none;line-height:1.4}
   .view{padding-bottom:calc(var(--fb,52px) + 14px)}
 }
-@media (max-width:900px){
-  /* vrstica se zaviha v dve vrsti, ovitek pa se je moral končati pod celim zabojem —
-     sicer spodnja vrsta gumijev lebdi nad fotografijo in je ni močno brati */
+/* Do te širine se ime ponudnika, šest postavk menija in dejanja ne zmorejo več v eno vrsto,
+   tudi če jih zgostiš — zato gre meni pod imenom v svojo vrstico, kot na telefonu. Brez tega
+   se "GRIBLJE 30 B" prelomi na dve vrsti in vrstica je videti odrezana.
+   Meja ni izbrana na pamet: pri 1240 px ima enovrstična zgoščena glava 46 px rezerve, pri
+   1190 px bi bila rezerva nič — ena daljša pot nazaj ali črka več v imenu bi meni prelomila. */
+@media (max-width:1239px){
   .topbar{height:auto;flex-wrap:wrap;padding:8px var(--pad) 0;
     background:linear-gradient(180deg,rgba(8,22,18,.98) 55%,rgba(8,22,18,.94) 88%,rgba(8,22,18,0) 100%)}
-  /* pet gumijev se je na ozkem zaslonu zavilo v dve vrsti in je skupaj z nogo pojedlo pol
-     zaslona; ena vrstica, ki se drsi vstran, pusti vsebini prostor tudi na majhnih telefonih.
-     Negativni rob raztegne drsno vrsto čez cel zaslon, da se gumbi ne režejo pred robom,
+  /* Negativni rob raztegne drsno vrsto čez cel zaslon, da se gumbi ne režejo pred robom,
      notranji rob pa ohrani enak odmik kot preostala vsebina. */
   .nav{order:3;flex:0 0 calc(100% + var(--pad) * 2);margin:0 calc(var(--pad) * -1);
     display:flex;flex-wrap:nowrap;align-items:center;overflow-x:auto;justify-content:flex-start;
     gap:6px;padding:8px var(--pad) 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .nav::-webkit-scrollbar{display:none}
   .nav button{flex:none;padding:10px 13px;font-size:10.5px;letter-spacing:.12em}
+}
+/* Nad 1239 px glava ostane enovrstična, a zgoščena: brez podnapisa in z manjšimi gumbi.
+   Zgoščevanje se konča šele tam, kjer ima tudi polna glava štirideset px rezerve — pri 1441 px
+   bi bila brez njega rezerva le 12 px. */
+@media (min-width:1240px) and (max-width:1470px){
+  .brand-txt i{display:none}
+  .nav{gap:0}
+  .nav button{padding:8px 10px;font-size:11px;letter-spacing:.08em}
+  .btn{padding:10px 14px;font-size:11px;letter-spacing:.1em}
+  .back{padding:10px 12px 10px 9px;font-size:11px;letter-spacing:.1em}
+}
+@media (max-width:900px){
+  /* Glava in drsna menjska vrstica sta postavljeni že v bloku do 1239 px. Tukaj ostanejo večji
+     gumbi za prst in zamenjava za --tb (170 px), ki jo ResizeObserver takoj nadomesti z izmerjeno
+     višino zavihane glave. */
   .btn{padding:12px 16px}
   .back{padding:10px 15px 10px 11px}
   .trail button{padding:9px 10px}
@@ -429,7 +458,7 @@ textarea{resize:none;min-height:74px}
   .submit-row{grid-template-columns:1fr}
   .foot{height:auto;padding:8px var(--pad);flex-wrap:wrap;gap:6px}
   /* identifikacija ponudnika mora ostati vidna tudi na telefonu; v eni vrstici z velikimi
-     tiskanimi črkami ni berljiva, zato gre v svojo vrstico in na male črke */
+     tiskanimi črkami ni čitljiva, zato gre v svojo vrstico in na male črke */
   .foot-right{flex-wrap:wrap;justify-content:flex-end;gap:4px 12px}
   .foot-right .legal{flex:1 0 100%;order:3;display:block;white-space:normal;overflow:visible;
     text-align:center;font-size:8px;letter-spacing:.04em;text-transform:none;line-height:1.4}
@@ -693,7 +722,9 @@ textarea{resize:none;min-height:74px}
   .cta-row{margin-top:14px}
 }
 @media (max-height:830px) and (min-width:901px){
-  .view{padding-top:74px}
+  /* Na kratkem zaslonu se odšteje samo rob nad glavo, ne pa tudi višine glave: pravila do 1239 px
+     jo zavihajo v dve vrsti (119 px), stalnih 74 px pa je vsebino potisnilo pod njo. */
+  .view{padding-top:calc(var(--tb,68px) + 6px)}
   .fact{padding:8px 0}
 }
 /* na prenosnikih se prikazna tipografija zloži, da stran ne rabi drsenja */

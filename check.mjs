@@ -173,6 +173,53 @@ need(/if \(!a\)[\s\S]{0,220}left: 0/.test(js), "meni se brez aktivnega gumba vrn
 const zbled = Number((js.match(/const ZBLED = (\d+)/) || [])[1]);
 need(zbled > 0 && css.includes(`calc(100% - ${zbled}px)`), `drsenje upošteva enak rob, kot ga zbledi css (${zbled} px)`);
 
+/* Glava se na ožjih zaslonih zlomi v dva pasu, zato mora odmik vsebine slediti njeni izmerjeni
+   višini, ne oceni. Stalna vrednost je v preteklosti vsebino potisnila pod meni. */
+const odmiki = [...css.matchAll(/\.view\s*\{[^}]*padding(?:-top)?\s*:\s*([^;}]+)/g)].map(m => m[1]);
+need(odmiki.length >= 3 && odmiki.every(v => /var\(--tb/.test(v)),
+  `vsi ${odmiki.length} odmiki vsebine pod glavo se merijo po njeni izmerjeni višini`);
+need(/\.nav button\{[\s\S]{0,240}white-space:nowrap/.test(css), "napisi v meniju se ne prelomijo na dve vrsti");
+need(/\.place\{[^}]*grid-template-rows:\s*minmax\(150px/.test(css), "fotografija na kartici hiše se ne stisne pod 150 px");
+
+/* Identifikacija ponudnika je pravni podatek: če ne ustre v vrstico, se prelomi, ne skrajša. */
+need(!/\.foot-right \.legal\{[^}]*text-overflow:\s*ellipsis/.test(css), "identifikacija ponudnika se ne reže s tripičjem");
+need(/Ponudnik:\s*LOGIS APARTMENTS/.test(html), "noga označi LOGIS APARTMENTS kot ime ponudnika");
+
+/* V kad se kade, na terasi pa je jacuzzi. Ime datoteke ostane, ker povezuje kodo s sliko na disku;
+   vse, kar je napisano obiskovalcu, mora govoriti o jacuzziju. */
+const vidno = js.replace(/\bf:\s*"[a-z0-9-]+"/g, "") + html;
+need(!/masažn|\bkad\b|kadjo/i.test(vidno), "vidno besedilo več ne omenja masažne kadi");
+need(/jacuzzi/i.test(js) && /jacuzzi/i.test(html), "obe datoteki govorita o jacuzziju");
+
+/* Beseda, ki se drugje piše s č, š ali ž, brez šumnikov je videti kot tipkarski spodrsljaj,
+   ne kot poenostavitev. Dovoljene so samo besede, ki so tudi brez šumnikov pravilna slovenska
+   beseda: se (sklonitev), vas (množina vasi), konca (rodilnik besede konec). */
+const SUMNIKI = (w) => w.replace(/č/g, "c").replace(/š/g, "s").replace(/ž/g, "z");
+const DRUGACE = new Map();
+const VIRI = [["app.js", js], ["index.html", html], ["styles.css", css]];
+for (const [, vir] of VIRI) {
+  for (const b of vir.split(/[^\p{L}]+/u)) {
+    if (b && /[ČŠŽčšž]/.test(b)) DRUGACE.set(SUMNIKI(b).toLowerCase(), b);
+  }
+}
+const DOVOLJENE = new Set(["se", "vas", "konca"]);
+const brezSumnikov = [];
+for (const [ime, vir] of VIRI) {
+  for (const b of vir.split(/[^\p{L}]+/u)) {
+    const k = b && b.toLowerCase();
+    if (!k || /[ČŠŽčšž]/.test(b) || !DRUGACE.has(k) || DOVOLJENE.has(k)) continue;
+    brezSumnikov.push(`${ime}: ${b} namesto ${DRUGACE.get(k)}`);
+  }
+}
+need(brezSumnikov.length === 0,
+  `nobena beseda ne izgubi šumnikov${brezSumnikov.length ? " — " + [...new Set(brezSumnikov)].slice(0, 4).join(", ") : ""}`);
+
+/* Primerjava zgoraj ujame samo besede, ki se drugje pišejo s šumniki. Besede, ki nastopijo
+   enkrat same, mora varovati seznam: to so spodrsljaji, ki smo jih že pobrisali. */
+const PONOVLJENI = ["blizina", "ozje", "garazo"];
+const vrnjeni = PONOVLJENI.filter(b => new RegExp(`\\b${b}\\b`, "i").test(js + html + css));
+need(vrnjeni.length === 0, `popravljenih napak ni nazaj${vrnjeni.length ? " — " + vrnjeni.join(", ") : ""}`);
+
 /* 10. glava mora obljubiti obe nastanitvi, sicer delitelj na Facebooku pokaže staro ponudbo */
 need((html.match(/"@type":"LodgingBusiness"/g) || []).length === loki.length,
   `JSON-LD napove ${loki.length} nastanitvi`);

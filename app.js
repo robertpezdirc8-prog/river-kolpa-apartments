@@ -40,7 +40,7 @@ const GAL = [
   {f:"letna-kuhinja-detajl", g:"vrt", w:1448, h:1086, t:"Letna kuhinja s ploščo za kuho, umivalnikom in orodjem na steni"},
   {f:"miza-pergola",   g:"vrt",   w:1600, h:720,  t:"Pogled s pergole na vrt z ležalnikoma"},
   {f:"terasa-pregled", g:"vrt",   w:1536, h:1024, t:"Pergola z dolgo mizo in staro črpalko, uta v ozadju"},
-  {f:"jacuzzi-terasa", g:"vrt",   w:963,  h:947,  t:"Vrtni kot z žarom in masažno kadjo"},
+  {f:"jacuzzi-terasa", g:"vrt",   w:963,  h:947,  t:"Vrtni kot z žarom in jacuzzijem"},
   {f:"gugal",          g:"vrt",   w:1023, h:1537, t:"Viseči kokon med bršljanom"},
   {f:"vrt-05",         g:"vrt",   w:404,  h:900,  t:"Ležalnik ob zunanji kuhinji"},
   {f:"noter-01",       g:"noter", w:900,  h:405,  t:"Odprt dnevni prostor z jedilnico in kuhinjo"},
@@ -53,13 +53,13 @@ const GAL = [
   {f:"soba-kisa",      g:"noter", w:1080, h:977,  t:"Kot s štedilnikom na drva"},
   {f:"miza",           g:"izkus", w:844,  h:1600, t:"Pogrnjena miza pod leseno pergolo"},
   {f:"izkus-01",       g:"izkus", w:900,  h:557,  t:"Domača pogača iz lastne peči"},
-  {f:"vrt-pregled",    g:"izkus", w:1080, h:498,  t:"Vrt s pergolo, masažno kadjo in dvema ležalnikoma"},
-  {f:"masazna-kad",    g:"izkus", w:1600, h:721,  t:"Masažna kad z mehurčki pod visečimi cvetlicami"},
-  {f:"uta-dan",        g:"izkus", w:1600, h:648,  t:"Uta z masažno kadjo in lesenima ležalnikoma"},
-  {f:"noc",            g:"izkus", w:720,  h:1600, t:"Masažna kad na lesenem odru ob mraku"},
-  {f:"vrt-lezniki",    g:"izkus", w:1080, h:570,  t:"Dva ležalnika pred masažno kadjo"},
+  {f:"vrt-pregled",    g:"izkus", w:1080, h:498,  t:"Vrt s pergolo, jacuzzijem in dvema ležalnikoma"},
+  {f:"masazna-kad",    g:"izkus", w:1600, h:721,  t:"Jacuzzi z mehurčki pod visečimi cvetlicami"},
+  {f:"uta-dan",        g:"izkus", w:1600, h:648,  t:"Uta z jacuzzijem in lesenima ležalnikoma"},
+  {f:"noc",            g:"izkus", w:720,  h:1600, t:"Jacuzzi na lesenem odru ob mraku"},
+  {f:"vrt-lezniki",    g:"izkus", w:1080, h:570,  t:"Dva ležalnika pred jacuzzijem"},
   {f:"uta-noc",        g:"izkus", w:1600, h:720,  t:"Uta zvečer, čez vrt poteka vrsta lučk"},
-  {f:"zunanjost-30b",  g:"vrt",   lok:"30b", w:1600, h:721, t:"Hiša z nadstreškom, masažno kadjo in garazo"},
+  {f:"zunanjost-30b",  g:"vrt",   lok:"30b", w:1600, h:721, t:"Hiša z nadstreškom, jacuzzijem in garažo"},
   {f:"travnik-30b",    g:"vrt",   lok:"30b", w:1600, h:900, t:"Travnik pred hišo z nogometnimi vrati in ležalniki"},
   {f:"kopalnica-30b",  g:"noter", lok:"30b", w:861,  h:1600, t:"Kopalnica s tušem, umivalnikom in strojem za perilo"},
   {f:"soba-30b-a",     g:"noter", lok:"30b", w:1092, h:1441, t:"Spalnica z zakonsko posteljo in omaro"},
@@ -85,7 +85,7 @@ const LOKI = [
     booking: "https://www.booking.com/hotel/si/holiday-house-kolpa.sl.html",
     enote: "dva apartmaja · 7 in 5 oseb",
     glava: "Prenovljena hiša z dvema enotama",
-    lede: "Ločena vhoda in terasi, skupen ograjen vrt s pergolo, letno kuhinjo in masažno kadjo. " +
+    lede: "Ločena vhoda in terasi, skupen ograjen vrt s pergolo, letno kuhinjo in jacuzzijem. " +
           "Do naravnega kopališča na Kolpi je deset minut hoje po ravni poti.",
     facts: [["2","samostojni enoti"],["7 + 5","oseb"],["10 min","hoje do reke"],["10 / 10","8 mnenj"]],
     zunanja: ["terasa-pregled", "letna-kuhinja"],
@@ -98,11 +98,11 @@ const LOKI = [
     map: "https://www.google.com/maps/search/?api=1&query=Griblje+30+b+8332+Gradac+Slovenija",
     booking: "",
     enote: "dva apartmaja",
-    glava: "Hiša s teraso, kadjo in travnikom",
+    glava: "Hiša s teraso, jacuzzijem in travnikom",
     lede: "Dva samostojna apartmaja v urejeni hiši. Na voljo sta kuhinja s pečico in štedilnikom " +
-          "ter kopalnica s tušem in pralnim strojem, pred hišo pa nadstrešena terasa z masažno " +
-          "kadjo in travnik z nogometnimi vrati.",
-    facts: [["2","samostojna apartmaja"],["kad","pod nadstreškom"],["travnik","z nogometnimi vrati"],["tuš","in pralni stroj"]],
+          "ter kopalnica s tušem in pralnim strojem, pred hišo pa nadstrešena terasa z jacuzzijem " +
+          "in travnik z nogometnimi vrati.",
+    facts: [["2","samostojna apartmaja"],["jacuzzi","pod nadstreškom"],["travnik","z nogometnimi vrati"],["tuš","in pralni stroj"]],
     zunanja: ["zunanjost-30b", "travnik-30b"],
     notranja: ["soba-30b-a", "soba-30b-b", "soba-30b-c", "kuhinja-30b", "kopalnica-30b", "hodnik-30b"],
     slika: "zunanjost-30b"
@@ -280,12 +280,12 @@ const VIEWS = {
             <span class="mask" style="--d:320ms"><span>ob reki <em class="uline">Kolpi<svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M4 8.6C42 3.4 96 2.2 196 6.4" pathLength="100"/></svg></em></span></span>
           </h1>
           <p class="lede" data-rv style="--d:520ms">Štirje samostojni apartmaji v dveh hišah v Gribljah ob reki Kolpi.
-          Vsaka hiša ima teraso, masažno kad in urejen vrt, obe pa vodi ista gostiteljica —
+          Vsaka hiša ima teraso, jacuzzi in urejen vrt, obe pa vodi ista gostiteljica —
           izberite tisto, ki je prosta v vašem terminu.</p>
           <div class="chips" data-rv style="--d:640ms">
             <span class="chip"><b>4</b> apartmaji v dveh hišah</span>
             <span class="chip"><b>2</b> naslova v Gribljah</span>
-            <span class="chip"><b>Masažna kad</b> in urejen vrt</span>
+            <span class="chip"><b>Jacuzzi</b> in urejen vrt</span>
             <span class="chip"><b>10 / 10</b> · 8 mnenj</span>
           </div>
           <div class="cta-row" data-rv style="--d:760ms">
@@ -320,7 +320,7 @@ const VIEWS = {
         <p class="eyebrow">Dva naslovov</p>
         <h2 class="mid" tabindex="-1" style="margin:12px 0 8px">Ista zasnova, dve hiši</h2>
         <p class="lede">Majda Pezdirc gosti v dveh hišah v Gribljah, vsaka z dvema samostojnima
-        apartmajema. Obe imata teraso, masažno kad in urejen vrt, zato je izkušnja
+        apartmajema. Obe imata teraso, jacuzzi in urejen vrt, zato je izkušnja
         enaka — razlikujeta se razpored prostorov in zunanjost.</p>
       </div>
       <div class="places" data-rv style="--d:200ms">
@@ -427,13 +427,13 @@ const VIEWS = {
     <div class="split">
       <div class="stack">
         <figure class="figure">${img("letna-kuhinja","Letna kuhinja pod nadstreškom")}<figcaption>Letna kuhinja</figcaption></figure>
-        <figure class="figure">${img("jacuzzi-terasa","Vrt z masažno kadjo in žarom")}<figcaption>Masažna kad in žar</figcaption></figure>
+        <figure class="figure">${img("jacuzzi-terasa","Vrt z jacuzzijem in žarom")}<figcaption>Jacuzzi in žar</figcaption></figure>
       </div>
       <div class="copy">
         <p class="eyebrow" data-rv style="--d:60ms">${LOKI[0].naslov} · Zunaj</p>
         <h2 class="mid" tabindex="-1" data-rv style="--d:140ms">Večer, ki se ne konča</h2>
         <p class="lede" data-rv style="--d:240ms">Pod pergolo z belimi zavesami je dolga miza, ob njej letna
-        kuhinja s ploščo za kuho in umivalnikom. Za vogalom sta žar in masažna kad, naprej pa urejena
+        kuhinja s ploščo za kuho in umivalnikom. Za vogalom sta žar in jacuzzi, naprej pa urejena
         trata z dvema ležalnikoma in gugalnim kokonom med bršljanom — vse blizu terase.</p>
         <div class="facts" data-rv style="--d:340ms">
           ${fact("8","pri mizi pod pergolo")}
@@ -765,7 +765,7 @@ const GAL_MAXH = 560;
 const GAL_MINW = 90;   /* ožje od tega pokončna slika postane rez, ki ga ni več mogoče brati */
 const GAL_SLIM = 0.6;  /* pokončna slika je lahko obrezana toliko, da je še videti kot slika in ne kot stolpec */
 const GAL_W = 1;       /* ponesrečen prekop pri prelomu vrstice stane več kot en piksel praznine */
-const GAL_BAND = 0.86; /* col, v katerem višine vrstic nihajo: ozje deluje zmedeno, širše pa pusti luknje */
+const GAL_BAND = 0.86; /* col, v katerem višine vrstic nihajo: ožje deluje zmedeno, širše pa pusti luknje */
 
 const galAr = (ar, h) => Math.max(ar, Math.max(GAL_MINW, GAL_SLIM * h) / h);
 const galRowW = (ars, h, gap) => ars.reduce((s, ar) => s + galAr(ar, h) * h, 0) + gap * (ars.length - 1);
