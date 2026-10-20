@@ -14,7 +14,8 @@ const TYPES = {
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, "http://localhost");
-  const rel = normalize(decodeURIComponent(url.pathname)).replace(/^([/\\])+/, "");
+  const rel = normalize(decodeURIComponent(url.pathname)).replace(/^([/\\])+/, "")
+    .replace(/^river-kolpa-apartments[/\\]/, "");
   const file = resolve(ROOT, rel || "index.html");
   if (!file.startsWith(ROOT)) return void res.writeHead(403).end();
   try {
@@ -23,7 +24,9 @@ const server = createServer(async (req, res) => {
     res.writeHead(200, { "Content-Type": TYPES[extname(file)] ?? "application/octet-stream", "Cache-Control": "no-store" });
     res.end(body);
   } catch {
-    res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" }).end("not found");
+    const n404 = await readFile(join(ROOT, "404.html"));
+    res.writeHead(404, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" });
+    res.end(n404);
   }
 });
 

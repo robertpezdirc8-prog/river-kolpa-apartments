@@ -505,6 +505,45 @@ for (const l of loki) need(html.includes(l.naslov), `glava vsebuje naslov ${l.na
 need((html.match(/GeoCoordinates/g) || []).length === 1,
   "geografske koordinate ima samo naslov, ki jih ima potrjene");
 
+/* 12. stran 404: samostojna, neindeksirana, z znano potjo do doma in preusmeritvijo,
+   ki pozne vsak pogled — sicer uporabnikov stari naslov odlete v slepo sporočilo */
+const n404 = read("404.html");
+need(/<html lang="sl">/.test(n404), "404 stran je v slovenščini (lang=sl)");
+need(n404.includes('<meta charset="utf-8">'), "404 stran naznanja UTF-8");
+need(n404.includes('name="viewport"'), "404 stran prilagodi zaslonu (viewport)");
+need(/<meta name="robots" content="noindex">/.test(n404),
+  "404 stran prepove indeksiranje, sicer iskalniki zapišejo napako kot stran");
+need(n404.includes('href="/river-kolpa-apartments/"'),
+  "404 stran vodi na dom po absolutni poti repozitorija, ker jo Pages servira na katerikoli globini");
+need(n404.includes('const OBSEG = "/river-kolpa-apartments/";'),
+  "preusmeritev na 404 strani vodi na koren repozitorija, ne na koren domene");
+need(n404.includes('location.pathname.split("/")'),
+  "preusmeritev na 404 strani išče znane dele po celotni poti, ne le pod predpono repozitorija");
+need(!/https?:\/\//.test(n404),
+  "404 stran ne nalaga nič od tretjih — deluje tudi, ko je vse ostalo zlomljeno");
+need(/ni bila najdena|ne vodi nikamor/.test(n404),
+  "404 stran pove, kaj se je zgodilo, v gostovem jeziku");
+
+/* preusmeritvena tabela mora znati poklicati vsak pogled iz app.js, tudi takšnega,
+   ki ga kasneje dodamo — sicer novega gostov starega naslova 404 ne reši */
+const pogledi = [...js.matchAll(/\n  ([a-z0-9]+): \{\n    label: "([^"]+)"/g)].map(m => m[1]);
+need(pogledi.length >= 9, `app.js razpoložljivih pogledov je ${pogledi.length}`);
+const teloPoti = (n404.match(/const POTI = \{([\s\S]*?)\};/) || [])[1] || "";
+for (const p of pogledi)
+  need(teloPoti.includes(`: "${p}"`),
+    `preusmeritev na 404 strani pozne pogled ${p}`);
+need(n404.includes("location.replace(OBSEG + \"#\" + v)"),
+  "preusmeritev na 404 strani zamenja naslov in ne onesnaži zgodovine");
+
+/* lokalni predogled naj odgovarja enako kot Pages: manjkajoča pot dobi stran 404,
+   ne golega besedila, in repozitorij se servira pod svojim prvim delom poti —
+   sicer se stran doma preizkusi v pogoju, ki ga gost nikoli ne vidi */
+const srv = read("serve.mjs");
+need(srv.includes('readFile(join(ROOT, "404.html"))') && srv.includes('writeHead(404, { "Content-Type": "text/html'),
+  "lokalni strežnik na manjkajoči poti servira stran 404 z oznako 404, tako kot Pages");
+need(srv.includes('.replace(/^river-kolpa-apartments[/\\\\]/, "")'),
+  "lokalni strežnik servira repozitorij pod prvim delom poti, tako kot Pages");
+
 console.log(ok.map(m => "  OK  " + m).join("\n"));
 if (bad.length) console.log("\n" + bad.map(m => "  NAP " + m).join("\n"));
 console.log(bad.length ? `\nZAPRT: ${bad.length} napak` : `\nODPRTO: ${ok.length} preizkusov uspelo`);

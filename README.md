@@ -1,10 +1,11 @@
 # River Kolpa Apartments
 
 Statična promocijska stran za dva apartmaja ob Kolpi v Gribljah. Brez odvisnosti,
-brez gradbenega koraka, brez okvirja: tri datoteke in mapa slik.
+brez gradbenega koraka, brez okvirja: štiri datoteke in mapa slik.
 
 ```
 index.html     glava, nosilna lupina, JSON-LD
+404.html       stran za naslove, ki ne obstajajo (Pages jo servira sama)
 styles.css     videz in prelomi
 app.js         vsebina pogledov in obnašanje (usmerjanje, galerija, obrazec)
 assets/        izvirne slike (webp + rezerva v jpg)
@@ -58,6 +59,7 @@ ne potrebuje nobenega preusmerjevalnega pravila.
   en sam dokument in nobenega strežnika. Urejanje v HTML ni mogoče.
 - `assets/og.jpg` in absolutni naslovi v `index.html` so vezani na trenutno domeno
   Pages. Ob preklopu na lastno domeno je treba štiri napisane naslove v glavi, dva v
-  JSON-LD in enega v `check.mjs` zamenjati naenkrat.
+  JSON-LD in enega v `check.mjs` zamenjati naenkrat. Enako vezana je stran `404.html`:
+  povezava do doma in rez za preusmeritev uporabljata pot `/river-kolpa-apartments/`.
 - `aggregateRating` v JSON-LD prihaja z lastne strani. Google samopredstavljene ocene
   obravnava kot kršitev pravil za bogate zadetke in jih lahko ne upošteva.

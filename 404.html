@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Stran ni bila najdena — River Kolpa Apartments</title>
+<style>
+:root{
+  --ink:#0b1d18;
+  --forest:#0f2a24;
+  --sage:#7f9b85;
+  --wood:#c8873f;
+  --wood-soft:#e0b287;
+  --cream:#f5efe4;
+  --muted:rgba(245,239,228,.62);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;display:grid;place-items:center;padding:24px;text-align:center;
+  background:radial-gradient(120% 90% at 50% 0%,var(--forest),var(--ink) 70%);
+  color:var(--cream);
+  font-family:"Manrope",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.znacka{margin:0 0 26px;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--sage)}
+.znacka b{display:block;margin-top:10px;font-size:34px;letter-spacing:.18em;color:var(--wood)}
+h1{
+  margin:0 0 16px;max-width:16em;
+  font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;
+  font-size:clamp(34px,6.4vw,58px);line-height:1.04;letter-spacing:-.01em;
+}
+p{margin:0 auto 30px;max-width:33em;line-height:1.65;font-size:16.5px;color:var(--muted)}
+a{
+  display:inline-block;padding:15px 28px;border-radius:12px;text-decoration:none;
+  background:var(--wood);color:var(--ink);
+  font-size:13.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  transition:background .2s;
+}
+a:hover{background:var(--wood-soft)}
+:focus-visible{outline:3px solid var(--wood-soft);outline-offset:3px;border-radius:8px}
+</style>
+</head>
+<body>
+<main>
+  <p class="znacka">River Kolpa Apartments<b>404</b></p>
+  <h1>Ta naslov ne vodi nikamor</h1>
+  <p>Naslov se je morda spremenil ali pa je bil zapisan napačno. Obe hiši še stojita ob
+  reki Kolpi — vrnite se domov in preverite, kdaj sta prosta.</p>
+  <a href="/river-kolpa-apartments/">Nazaj domov</a>
+</main>
+<script>
+(function () {
+  const OBSEG = "/river-kolpa-apartments/";
+  const POTI = {
+    "domov": "home",
+    "home": "home",
+    "start": "home",
+    "lokacije": "places",
+    "lokaciji": "places",
+    "places": "places",
+    "griblje-70": "units",
+    "griblje70": "units",
+    "haus-70": "units",
+    "house-70": "units",
+    "griblje-30-b": "p30",
+    "griblje-30b": "p30",
+    "g30b": "p30",
+    "vrt": "garden",
+    "garden": "garden",
+    "garten": "garden",
+    "reka": "river",
+    "kolpa": "river",
+    "river": "river",
+    "okolica": "area",
+    "umgebung": "area",
+    "area": "area",
+    "galerija": "gallery",
+    "gallery": "gallery",
+    "galerie": "gallery",
+    "prosti-termini": "booking",
+    "termini": "booking",
+    "booking": "booking",
+    "kontakt": "booking",
+    "verfugbarkeit": "booking"
+  };
+  const kosi = location.pathname.split("/");
+  for (const kos of kosi) {
+    let ime = kos;
+    try { ime = decodeURIComponent(kos); } catch { /* neveljavno kodiranje pomeni neznano pot */ }
+    const v = POTI[ime.toLowerCase()];
+    if (v) { location.replace(OBSEG + "#" + v); return; }
+  }
+})();
+</script>
+</body>
+</html>
