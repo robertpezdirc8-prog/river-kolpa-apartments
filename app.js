@@ -216,7 +216,9 @@ const img = (f, alt, cls = "") => {
   return `<img src="assets/${f}.webp" srcset="assets/t/${f}.webp 640w, assets/${f}.webp ${d ? d[0] : 1868}w" sizes="${IMG_SIZES}" onerror="this.src='assets/${f}.jpg'" alt="${alt}"${d ? ` width="${d[0]}" height="${d[1]}"` : ""} ${cls ? `class="${cls}"` : ""} loading="lazy">`;
 };
 
-const galCount = n => `${n} ${n === 1 ? "fotografija" : n === 2 ? "fotografiji" : n === 3 || n === 4 ? "fotografije" : "fotografij"}`;
+/* Števka in samostalnik sta dva zaporedna vozlišča, ne en stavek: besedo o fotografijah
+   mora slovar znati prevesti sam, sicer se ne ujame z nobenim drugim napisom na strani. */
+const galCount = n => `${n} <span>${n === 1 ? "fotografija" : n === 2 ? "fotografiji" : n === 3 || n === 4 ? "fotografije" : "fotografij"}</span>`;
 
 function door(view, title, sub, photo) {
   return `<button class="door" data-go="${view}" data-flat="1">
@@ -232,10 +234,10 @@ function xlink(lok, dodatni) {
   const sama = LOKI.find(l => l.id === lok);
   const druga = LOKI.find(l => l.id !== lok);
   return `<div class="xlink">
-    <button class="btn btn-ghost" data-go="${druga.pogled}" data-flat="1">Druga hiša: ${druga.naslov}</button>
-    <button class="btn btn-ghost" data-go="gallery" data-flat="1" data-glok="${lok}">Fotografije ${sama.naslov}</button>
+    <button class="btn btn-ghost" data-go="${druga.pogled}" data-flat="1">Druga hiša: <span>${druga.naslov}</span></button>
+    <button class="btn btn-ghost" data-go="gallery" data-flat="1" data-glok="${lok}">Fotografije <span>${sama.naslov}</span></button>
     ${dodatni ? `<button class="btn btn-ghost" data-go="${dodatni[1]}" data-flat="1">${dodatni[0]}</button>` : ""}
-    <a class="btn btn-ghost" href="${sama.map}" target="_blank" rel="noopener">Zemljevid ${sama.naslov}</a>
+    <a class="btn btn-ghost" href="${sama.map}" target="_blank" rel="noopener">Zemljevid <span>${sama.naslov}</span></a>
   </div>`;
 }
 
@@ -246,7 +248,7 @@ function stripCard(icon, tag, title, text, photo, view, tab) {
 }
 
 function quote(q) {
-  return `<figure class="quote"><blockquote>${q.text}</blockquote><figcaption>${q.name} · ${q.from}</figcaption></figure>`;
+  return `<figure class="quote"><blockquote>${q.text}</blockquote><figcaption><span>${q.name}</span> · <span>${q.from}</span></figcaption></figure>`;
 }
 
 /* Determinističen prah v zraku — brez Math.random, da se razpored ne menja med nalaganji. */
@@ -304,7 +306,7 @@ const VIEWS = {
         ${door("garden","Vrt in jacuzzi","Terasa, žar, letna kuhinja","jacuzzi-terasa")}
         ${door("river","Reka Kolpa","Kopališče deset minut hoje","reka-01")}
         ${door("area","Okolica","Vasi, kleti in poti","reka-04")}
-        ${door("gallery","Galerija",`${GAL.length} fotografij`,"noter-01")}
+        ${door("gallery","Galerija",galCount(GAL.length),"noter-01")}
         ${door("booking","Prosti termini","Povpraševanje in kontakt","noc")}
       </div>
     </div>`
@@ -330,7 +332,7 @@ const VIEWS = {
           <div class="place-body">
             <p class="place-kicker">${l.naslov}</p>
             <h3>${l.glava}</h3>
-            <p class="place-meta">${l.enote} · ${galCount(GAL_ŠT(l.id))} v galeriji</p>
+            <p class="place-meta"><span>${l.enote}</span> · ${galCount(GAL_ŠT(l.id))} v galeriji</p>
             <p class="place-lede">${l.lede}</p>
             <div class="facts place-facts">${l.facts.map(f => fact(f[0], f[1])).join("")}</div>
             <div class="place-cta">
@@ -352,7 +354,7 @@ const VIEWS = {
     render: () => `
     ${amb()}
     <div class="units-wrap">
-    <p class="eyebrow" data-rv style="--d:60ms">Nastanitev · ${LOKI[0].naslov}</p>
+    <p class="eyebrow" data-rv style="--d:60ms">Nastanitev · <span>${LOKI[0].naslov}</span></p>
     <h2 class="mid" tabindex="-1" data-rv style="margin:12px 0 8px;--d:140ms">Dva samostojna apartmaja</h2>
     <p class="lede" data-rv style="--d:240ms">Prenovljena hiša ima dve samostojni enoti, vsaka s svojim vhodom in
     svojo teraso. Spodaj sta razpored ležišč in opis opreme posamezne enote.</p>
@@ -404,7 +406,7 @@ const VIEWS = {
       return `
     ${amb()}
     <div class="units-wrap">
-    <p class="eyebrow" data-rv style="--d:60ms">Nastanitev · ${l.naslov}</p>
+    <p class="eyebrow" data-rv style="--d:60ms">Nastanitev · <span>${l.naslov}</span></p>
     <h2 class="mid" tabindex="-1" data-rv style="margin:12px 0 8px;--d:140ms">${l.glava}</h2>
     <p class="lede" data-rv style="--d:240ms">${l.lede}</p>
     <div class="placegrid" data-rv style="--d:340ms">
@@ -430,7 +432,7 @@ const VIEWS = {
         <figure class="figure">${img("jacuzzi-terasa","Vrt z jacuzzijem in žarom")}<figcaption>Jacuzzi in žar</figcaption></figure>
       </div>
       <div class="copy">
-        <p class="eyebrow" data-rv style="--d:60ms">${LOKI[0].naslov} · Zunaj</p>
+        <p class="eyebrow" data-rv style="--d:60ms"><span>${LOKI[0].naslov}</span> · Zunaj</p>
         <h2 class="mid" tabindex="-1" data-rv style="--d:140ms">Večer, ki se ne konča</h2>
         <p class="lede" data-rv style="--d:240ms">Pod pergolo z belimi zavesami je dolga miza, ob njej letna
         kuhinja s ploščo za kuho in umivalnikom. Za vogalom sta žar in jacuzzi, naprej pa urejena
@@ -526,7 +528,7 @@ const VIEWS = {
         <button class="btn btn-ghost" id="galReset">Pokaži vse fotografije</button>
       </div>
       <div class="gal" id="gal" data-tab="vse" data-lok="vse" data-rv style="--d:180ms">
-        ${GAL.map((g,i)=>`<button data-lb="${i}" data-g="${g.g}" data-lok="${LOK(g)}" aria-label="Odpri fotografijo: ${g.t}">
+        ${GAL.map((g,i)=>`<button data-lb="${i}" data-g="${g.g}" data-lok="${LOK(g)}">
           ${img(g.f, g.t)}
         </button>`).join("")}
       </div>
@@ -553,7 +555,7 @@ const VIEWS = {
           ${LOKI.map(l => `<a href="${l.map}" target="_blank" rel="noopener">${ic.pin}<span>${l.address}</span><small>Zemljevid</small></a>`).join("")}
         </div>
         <div class="score" data-rv style="--d:440ms">
-          <div class="score-num"><b>${REVIEWS.score}</b><span>od 10 · ${REVIEWS.count}</span></div>
+          <div class="score-num"><b>${REVIEWS.score}</b><span>od 10 · <span>${REVIEWS.count}</span></span></div>
           <ul class="subs">${REVIEWS.subs.map(s=>`<li><span>${s[0]}</span><b>${s[1]}</b></li>`).join("")}</ul>
         </div>
         <div class="quotes" data-rv style="--d:540ms">${REVIEWS.quotes.slice(0,2).map(quote).join("")}</div>
@@ -890,13 +892,15 @@ function galFilter() {
     if (!n) {
       const drugje = GAL.filter(g => (galTab === "vse" || g.g === galTab) &&
                                      (galLok === "vse" || LOK(g) !== galLok)).length;
-      document.getElementById("galEmptyTxt").textContent =
-        `Za ${LOK_N[galLok]} te vsebine v arhivu še ni.` +
-        (drugje ? ` Drugje imamo ${galCount(drugje)}.` : "");
+      /* Naslov hiše in števec sta ločeni vozlišči: stavek se ne prevede, če je vmes
+         neprevedljivo ime, slovar pa pozna samo celo besedilno vrsto. */
+      document.getElementById("galEmptyTxt").innerHTML =
+        `<span>Za</span> <span>${LOK_N[galLok]}</span> <span>te vsebine v arhivu še ni.</span>` +
+        (drugje ? ` <span>Drugje imamo</span> ${galCount(drugje)}<span>.</span>` : "");
     }
   }
   const meta = document.getElementById("galMeta");
-  if (meta) meta.textContent = n ? `${galCount(n)} iz lastnega arhiva` : "v tej izbiri ni fotografij";
+  if (meta) meta.innerHTML = n ? `${galCount(n)} <span>iz lastnega arhiva</span>` : "<span>v tej izbiri ni fotografij</span>";
   gal._key = "";
   galLayout();
 }
@@ -991,7 +995,10 @@ function showLb(i) {
   const g = lbList[lbi];
   lbImg.src = `assets/${g.f}.jpg`;
   lbImg.alt = g.t;
-  lbCap.textContent = `${lbi + 1} / ${lbList.length} — ${g.t}${LOK(g) !== "70" ? ` · ${LOK_N[LOK(g)]}` : ""}`;
+  /* Ločeni vozlišči: števec je za slovar nezanimiv, naslov fotografije in naslov hiše pa
+     so že prevedeni sami, zato lahko vrstica ostane enaka v vsakem jeziku. */
+  lbCap.innerHTML = `<span>${lbi + 1} / ${lbList.length}</span> <span>—</span> <span>${g.t}</span>` +
+    (LOK(g) !== "70" ? ` <span>·</span> <span>${LOK_N[LOK(g)]}</span>` : "");
   /* naslednja se naloži šele, ko je trenutna na zaslonu, da z njo ne tekmuje za pas */
   lbImg.onload = () => { new Image().src = `assets/${lbList[(lbi + 1) % lbList.length].f}.jpg`; };
 }

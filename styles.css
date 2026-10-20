@@ -119,6 +119,17 @@ img{display:block}
 .trail button[aria-current="page"]{color:var(--wood-soft)}
 .trail button:disabled{cursor:default}
 .trail span{color:rgba(245,239,228,.28)}
+/* Jezik je izbira celote strani, ne enega pogleda — zato stoji v nogi, ki je priklopljena
+   na vsebino in jo ResizeObserver meri skupaj z njo. V glavi bi izgubil enovrstično
+   postavitev, ki je izmerjena do pixela. */
+.langs{display:flex;align-items:center;gap:2px;flex:none}
+.langs button{
+  background:none;border:0;cursor:pointer;font:inherit;color:rgba(245,239,228,.5);
+  padding:6px 9px;border-radius:999px;letter-spacing:.14em;
+  transition:color .25s,background .25s;
+}
+.langs button:hover{color:var(--cream);background:rgba(245,239,228,.08)}
+.langs button[aria-pressed="true"]{color:var(--wood-soft);background:rgba(245,239,228,.07)}
 .foot-right{display:flex;align-items:center;gap:18px;min-width:0;color:rgba(245,239,228,.38)}
 .call{display:none;align-items:center;gap:8px;flex:none;padding:9px 15px;border:1px solid var(--line);border-radius:999px;
   font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--cream);transition:border-color .3s}
@@ -191,7 +202,9 @@ h1:focus-visible,h2:focus-visible{outline-offset:10px}
 .door:hover{border-color:rgba(245,239,228,.42);transform:translateY(-4px)}
 .door img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;transition:opacity .5s,transform 1.1s var(--ease)}
 .door:hover img{opacity:.75;transform:scale(1.08)}
-.door span{position:absolute;inset:auto 0 0 0;padding:32px 14px 13px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;
+/* Napis je en sam pas pod sliko, zato ga tarče na neposrednega otroka: besedilne vrste,
+   ki jih razbije prevajalni slovar, smejo imeti svoj span brez lastne postavitve. */
+.door > span{position:absolute;inset:auto 0 0 0;padding:32px 14px 13px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;
   background:linear-gradient(0deg,rgba(4,16,13,.98) 22%,rgba(4,16,13,.95) 58%,transparent)}
 .door b{font-family:"Cormorant Garamond",serif;font-size:21px;font-weight:500}
 .door i{font-style:normal;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--wood-soft)}
@@ -284,7 +297,7 @@ h1:focus-visible,h2:focus-visible{outline-offset:10px}
 
 .score{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
 .score-num b{display:block;font-family:"Cormorant Garamond",serif;font-size:52px;font-weight:500;color:var(--wood-soft);line-height:.9}
-.score-num span{display:block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.score-num > span{display:block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:8px}
 .subs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px 18px}
 .subs li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:11.5px;letter-spacing:.04em;color:var(--muted)}
 .subs li b{color:var(--cream);font-weight:600}
@@ -433,6 +446,10 @@ textarea{resize:none;min-height:74px}
   .trail button{padding:9px 10px}
   .soc a{padding:11px 2px}
   .tab{padding:15px 16px;font-size:11px;min-height:44px}
+  /* Stikalo za jezik je na telefonu edini gumb, ki ga mora najti vsak tuj gost — enaka meja
+     za prst kot pri meniju, sicer ostane 30 px visek. */
+  .langs button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;
+    padding:0 12px;font-size:11px}
   /* Drsenje po menuju je na telefonu najpogostejši gib, a gumbi so iz pasu za namizni meni podedovali
      34 px — najmanjši cilj na strani. Vsi ostali gumbi so že prilagojeni prstu, zato se jim mora
      pripeti še meni; min-height deluje samo skupaj z notranjo poravnavo, sicer besedilo obtiči zgoraj. */
@@ -480,7 +497,7 @@ textarea{resize:none;min-height:74px}
   .quote figcaption{font-size:10.5px}
   .fact span{font-size:11px}
   .contact-list small{font-size:11px}
-  .score-num span{font-size:11px}
+  .score-num > span{font-size:11px}
   .acc summary{font-size:11px}
   .amenbar div{font-size:12.5px}
   .card p{font-size:13px}

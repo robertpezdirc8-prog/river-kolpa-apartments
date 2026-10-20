@@ -6,7 +6,7 @@ import vm from "node:vm";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const read = f => readFileSync(join(ROOT, f), "utf8");
-const html = read("index.html"), css = read("styles.css"), js = read("app.js");
+const html = read("index.html"), css = read("styles.css"), js = read("app.js"), jez = read("jeziki.js");
 const SITE = "https://robertpezdirc8-prog.github.io/river-kolpa-apartments/";
 const MAX_KB = { tile: 220, full: 420, font: 60 };
 
@@ -16,8 +16,10 @@ const fail = m => bad.push(m);
 const need = (cond, msg) => (cond ? pass : fail)(msg);
 
 /* 1. JS se mora razčleniti — brez izvajanja */
-try { new vm.Script(js); pass("app.js se razčleni"); }
-catch (e) { fail(`app.js: ${e.message}`); }
+for (const [dat, vir] of [["app.js", js], ["jeziki.js", jez]]) {
+  try { new vm.Script(vir); pass(`${dat} se razčleni`); }
+  catch (e) { fail(`${dat}: ${e.message}`); }
+}
 
 /* 2. vsaka dobesedna pot do datoteke mora obstajati */
 const refs = new Set();
@@ -203,8 +205,10 @@ need(!/\.foot-right \.legal\{[^}]*text-overflow:\s*ellipsis/.test(css), "identif
 need(/Ponudnik:\s*LOGIS APARTMENTS/.test(html), "noga označi LOGIS APARTMENTS kot ime ponudnika");
 
 /* V kad se kade, na terasi pa je jacuzzi. Ime datoteke ostane, ker povezuje kodo s sliko na disku;
-   vse, kar je napisano obiskovalcu, mora govoriti o jacuzziju. */
-const vidno = js.replace(/\bf:\s*"[a-z0-9-]+"/g, "") + html;
+   vse, kar je napisano obiskovalcu, mora govoriti o jacuzziju. Prevoda sta besedilo, ki ga
+   gost vidi enako kot slovenščina, zato spadata v isti pregled. */
+const izbrisiSlike = (s) => s.replace(/\bf:\s*"[a-z0-9-]+"/g, "");
+const vidno = izbrisiSlike(js) + izbrisiSlike(jez) + html;
 need(!/masažn|\bkad\b|kadjo/i.test(vidno), "vidno besedilo več ne omenja masažne kadi");
 need(/jacuzzi/i.test(js) && /jacuzzi/i.test(html), "obe datoteki govorita o jacuzziju");
 
@@ -231,7 +235,7 @@ need(!/class="distlist"/.test(js) && !/\.distlist/.test(css),
    bere le stroj. Tuja domena pomeni, da stran pripelje goste nekemu drugemu. */
 const SVOJI = ["wa.me", "booking.com/hotel/si/holiday-house-kolpa", "google.com/maps",
   "robertpezdirc8-prog.github.io", "facebook.com/p/RIVER-KOLPA", "schema.org", "w3.org"];
-const povezave = [...new Set(`${js}\n${html}`.match(/https?:\/\/[^\s"'()<>]+/g) || [])];
+const povezave = [...new Set(`${js}\n${jez}\n${html}`.match(/https?:\/\/[^\s"'()<>]+/g) || [])];
 const tujePovezave = povezave.filter((u) => !SVOJI.some((s) => u.includes(s)));
 need(tujePovezave.length === 0,
   `nobena od ${povezave.length} zunanjih povezav ne vodi na tujo ponudbo` +
@@ -261,12 +265,240 @@ need(brezSumnikov.length === 0,
   `nobena beseda ne izgubi šumnikov${brezSumnikov.length ? " — " + [...new Set(brezSumnikov)].slice(0, 4).join(", ") : ""}`);
 
 /* Primerjava zgoraj ujame samo besede, ki se drugje pišejo s šumniki. Besede, ki nastopijo
-   enkrat same, mora varovati seznam: to so spodrsljaji, ki smo jih že pobrisali. */
+   enkrat same, mora varovati seznam: to so spodrsljaji, ki smo jih že pobrisali. Slovene
+   ključi slovarja so isti napis, ki ga vidi gost, zato pregled vključuje tudi jezikovno datoteko. */
 const PONOVLJENI = ["blizina", "ozje"];
-const vrnjeni = PONOVLJENI.filter(b => new RegExp(`\\b${b}\\b`, "i").test(js + html + css));
+const vrnjeni = PONOVLJENI.filter(b => new RegExp(`\\b${b}\\b`, "i").test(js + jez + html + css));
 need(vrnjeni.length === 0, `popravljenih napak ni nazaj${vrnjeni.length ? " — " + vrnjeni.join(", ") : ""}`);
 
-/* 10. glava mora obljubiti obe nastanitvi, sicer delitelj na Facebooku pokaže staro ponudbo */
+/* ── 10. jezikovna prevajalna plast ───────────────────────────────
+   Predloge ostanejo slovenske, prevedene so samo besede, ki jih vidi gost. Ker se ključi
+   berejo iz slovarja in ne iz predlog, je celotno verigo mogoče preveriti pred izpisom:
+   ključ, ki ga koda nikoli ne zapiše, je mrtav; napis, ki ga koda zapiše, slovar pa ga ne
+   pozna, pa gostu ostane v slovenščini. Oboje je tu zajeto. */
+const SLOVAR = (ime) => {
+  const zaj = jez.match(new RegExp(`const ${ime} = \\{([\\s\\S]*?)\\n\\};`));
+  if (!zaj) return null;
+  try { return vm.runInNewContext("({" + zaj[1] + "})"); } catch (e) { return null; }
+};
+const KJ = (ime) => {
+  const zaj = jez.match(new RegExp(`const ${ime} = \\{([\\s\\S]*?)\\n\\};`));
+  if (!zaj) return [];
+  return [...zaj[1].matchAll(/^[ \t]*"((?:[^"\\]|\\.)*)"[ \t]*:/gm)].map(m => m[1]);
+};
+/* Napis, ki ga zavrne že sam mehanizem, ne more imeti prevoda: take ključe je treba
+   pobrisati, sicer ustvarjajo lažen občutek pokritosti. */
+const vztraj = jez.match(/const NEVED = \[([\s\S]*?)\n  \];/);
+const PRESKOC = vztraj ? vm.runInNewContext("[" + vztraj[1] + "]") : [];
+const DE = SLOVAR("DE_JEZIK"), EN = SLOVAR("EN_JEZIK");
+need(!!DE && !!EN, "oba slovarja se razčlenita kot predmet s samimi besedili");
+if (DE && EN) {
+  const normal = (s) => s.replace(/\s+/g, " ").trim();
+  const kd = KJ("DE_JEZIK"), ke = KJ("EN_JEZIK");
+  need(kd.length === Object.keys(DE).length && ke.length === Object.keys(EN).length,
+    `v slovarjih se noben ključ ne podvaja (nemški ${kd.length}, angleški ${ke.length})`);
+  need(kd.length >= 150 && ke.length >= 150,
+    `nemški slovar ima ${kd.length}, angleški ${ke.length} napisov`);
+
+  const vsi = [...new Set([...kd, ...ke])];
+  const manjkajoco = vsi.filter(k => !Object.hasOwn(DE, k) || !Object.hasOwn(EN, k));
+  need(manjkajoco.length === 0, `oba jezika pokrijeta enak seznam napisov` +
+    (manjkajoco.length ? ` — manjka: ${manjkajoco.slice(0, 3).join(" | ")}` : ""));
+
+  /* Ključ se išče po normaliziranem napisu; če ima on sam odvečen presledek, ga nikoli
+     ni mogoče najti, prevajalnik pa molči. */
+  const umazani = vsi.filter(k => normal(k) !== k);
+  need(umazani.length === 0, `ključi so brez odvečnih presledkov` +
+    (umazani.length ? ` — ${umazani.slice(0, 3).map(k => JSON.stringify(k)).join(" | ")}` : ""));
+
+  /* Vsak ključ mora biti dobesedno tisti napis, ki ga predloga zapiše, sicer je slovar
+     napisal kdo iz misli in prevod na strani nikoli ne zaživi. Dolg stavek je v kodi lahko
+     sestavljen iz več dobesedij, zapetih z "+", izpisana besedilna vrsta pa je ena sama —
+     zato pred iskanjem združimo vejice sestavljanja. Konstante, ki so v kodi zapisane
+     dobesedno, nadomestimo z njihovo vrednostjo: "več kot ${OSEBE_MAX}" se izpiše kot
+     "več kot 12". Dvigne-li lastnik mejo, mora slediti tudi slovar, sicer vrata ostanejo zaprta. */
+  const KONST = [...js.matchAll(/const ([A-Z_][A-Z0-9_]*) = ("[^"]*"|\d+(?:\.\d+)?);/g)];
+  need(KONST.some(m => m[1] === "OSEBE_MAX"), "izvor pozna dobesedno mejo za osebe");
+  let izvor = [js, html, css].join("\n").replace(/["']\s*\+\s*["']/g, "");
+  for (const [, ime, vred] of KONST) izvor = izvor.split("${" + ime + "}").join(vred.replace(/^"|"$/g, ""));
+  const VIR_SLO = normal(izvor);
+  const brezVira = vsi.filter(k => !VIR_SLO.includes(normal(k)));
+  need(brezVira.length === 0, `vseh ${vsi.length} ključev je v slovenski predlogi` +
+    (brezVira.length ? ` — ne najdem: ${brezVira.slice(0, 3).join(" | ")}` : ""));
+
+  need(PRESKOC.length >= 5, `mehanizem pozna ${PRESKOC.length} vzorcev, ki jih preskoči`);
+  const mrtvi = vsi.filter(k => PRESKOC.some(re => re.test(normal(k))));
+  need(mrtvi.length === 0, `noben ključ ne stoji za vzorcem, ki ga prevajalnik preskoči` +
+    (mrtvi.length ? ` — ${mrtvi.slice(0, 3).join(" | ")}` : ""));
+
+  /* Jacuzzi je na terasi, ne v kopalnici, in pri nas se vedno imenuje jacuzzi. V tujem jeziku
+     ne sme zamočiti na "kad", "masažno kad" ali "hot tub": seznam je zapisan eksplicitno, ker
+     sta "bathroom" in "bathing spot" (kopalnica, naravno kopališče) na strani zakonita. */
+  const TUJE_ZA_JACUZZI = /(Badewanne|Massagebad|Whirlpool|hot ?tub|bathtub|\bkad\b|masažn)/i;
+  const zamenjano = [];
+  for (const [ime, o] of [["nemški", DE], ["angleški", EN]])
+    for (const [k, v] of Object.entries(o))
+      if (typeof v === "string" && TUJE_ZA_JACUZZI.test(v)) zamenjano.push(`${ime}: ${k} → ${v}`);
+  need(zamenjano.length === 0, "jacuzzi ostane jacuzzi v vsakem jeziku" +
+    (zamenjano.length ? ` — ${zamenjano.slice(0, 2).join(" | ")}` : ""));
+
+  /* "Kontakt" in "Kanu" se v nemščini pišeta enako kot v slovenščini, "jacuzzi" pa v angleščini.
+     Izjema je kratka namenoma: vse drugo, kar ponovi slovenski napis, je sumljivo. */
+  const ENAKO = new Set(["de:Kontakt", "de:Kanu", "en:jacuzzi"]);
+  const odvec = [...ENAKO].filter((z) => {
+    const [koda, k] = z.split(":");
+    const o = koda === "de" ? DE : EN;
+    return !o || normal(o[k]) !== normal(k);
+  });
+  need(odvec.length === 0, `izjema za enak prevod ne pokriva napisa, ki je v resnici preveden` +
+    (odvec.length ? ` — ${odvec.join(" | ")}` : ""));
+  for (const [ime, koda, o] of [["nemški", "de", DE], ["angleški", "en", EN]]) {
+    const prazni = Object.entries(o).filter(([, v]) => typeof v !== "string" || normal(v) === "");
+    const ponovljeni = Object.entries(o).filter(([k, v]) => normal(v) === normal(k) && !ENAKO.has(koda + ":" + k));
+    const robovi = Object.entries(o).filter(([, v]) => typeof v === "string" && normal(v) !== v);
+    need(prazni.length === 0, `${ime} slovar nima praznega prevoda` +
+      (prazni.length ? ` — ${prazni.slice(0, 3).map(([k]) => k).join(" | ")}` : ""));
+    need(ponovljeni.length === 0, `${ime} prevod nikoli ne ponovi slovenskega napisa` +
+      (ponovljeni.length ? ` — ${ponovljeni.slice(0, 3).map(([k]) => k).join(" | ")}` : ""));
+    need(robovi.length === 0, `${ime} prevodi so čisti na robovih in v sredini` +
+      (robovi.length ? ` — ${robovi.slice(0, 3).map(([k]) => k).join(" | ")}` : ""));
+  }
+
+  /* Naslov zavihka je navadno besedilno vozlišče v glavi, zato ga opazovalec prevede sam —
+     a samo tedaj, kadar ima slovar tudi te napise. */
+  const nazivi = [...js.matchAll(/title:\s*"([^"]+)"/g)].map(m => m[1]);
+  const brezNaziva = nazivi.filter(t => !Object.hasOwn(DE, t) || !Object.hasOwn(EN, t));
+  need(nazivi.length >= 8 && brezNaziva.length === 0,
+    `vsi ${nazivi.length} naslovi zavihka imata prevod` +
+    (brezNaziva.length ? ` — manjka: ${brezNaziva.join(" | ")}` : ""));
+
+  /* Atributi, ki jih gost vidi (alt, aria-label, placeholder, title), so napisi tako kot
+     besedilo in morajo biti v obeh slovarjih — ali pa jih mehanizem spusti čez vzorec.
+     Predlogi z razčlenjevanjem (${...}) tu ne moremo slediti, zato jih spustimo. */
+  const atributni = [...new Set([...(js + "\n" + html).matchAll(/(?:alt|aria-label|placeholder|title)="([^"]+)"/g)].map(m => m[1]))]
+    .filter(v => !v.includes("${") && /[A-Za-zÀ-ž]/.test(v));
+  const brezAtributa = atributni.filter(v =>
+    !Object.hasOwn(DE, v) && !Object.hasOwn(EN, v) && !PRESKOC.some(re => re.test(v)));
+  need(atributni.length >= 10 && brezAtributa.length === 0,
+    `vsi ${atributni.length} vidnih atributov sta v slovarjih ali za vzorcem` +
+    (brezAtributa.length ? ` — manjka: ${brezAtributa.slice(0, 3).join(" | ")}` : ""));
+
+  /* Placeholder je napis na polju in ne vsebina polja: zato prevajanje atributov sme
+     preskočiti le kodo in predloge, ne pa TEXTAREA, sicer vzorčno sporočilo ostane
+     slovensko tudi nemškemu gostu. */
+  need(/const atributi = \(el\) => \{\n    if \(PRESKOCI_ATR\.has\(el\.tagName\)\) return;/.test(jez),
+    "prevajanje atributov uporablja ožji seznam preskokov kot besedilo");
+
+  /* Podocene so številke, prevajalnik pa številk ne prevaja — a decimalno ločilo se
+     razlikuje: slovenščina in nemščina pišeta vejico, angleščina piko. Gostu ne sme ostati
+     "Location 8,5". Pravila ni mogoče preizkusiti čez slovar, ker se brezčrkovni napisi
+     ustavijo že pred iskanjem po njem. Zato se zažene dejanski kos kode iz mehanizma, in
+     sicer nad tistimi številkami, ki jih zapiše predloga. */
+  const LOČILO = jez.match(/const DECIMALNA = (\/[^\n]+\/[a-z]*);/);
+  const VEO = jez.match(/if \(j === "en"\) \{([\s\S]*?)\n    \}/);
+  need(!!LOČILO && !!VEO, "mehanizem pozna pretvorbo decimalnega ločila za angleščino");
+  if (LOČILO && VEO) {
+    const številke = [...new Set([...js.matchAll(/"(\d+,\d+)"/g)].map(m => m[1]))];
+    need(številke.length >= 2,
+      `predloga izpiše ${številke.length} decimalni števili, da ima preizkus kaj preveriti`);
+    /* Izoliran kontekst, kot pri slovarjih zgoraj: prevzame se vzorec in veja iz mehanizma,
+       ne njuna parafraza, da pravilo ne ostane zeleno po izbrisanem delu kode. */
+    let prevedene = null;
+    try {
+      prevedene = JSON.parse(vm.runInNewContext(
+        "const DECIMALNA = " + LOČILO[1] + ";\n" +
+        "const po_ločilu = (n) => {" + VEO[1] + "\n    return n;\n};\n" +
+        "JSON.stringify(ŠTEVILKE.map(po_ločilu))", { ŠTEVILKE: številke }));
+    } catch (e) { prevedene = null; }
+    need(Array.isArray(prevedene) && prevedene.length === številke.length,
+      "veja za angleščino se izvede brez napake");
+    const pravilne = številke.map((z, i) => !!prevedene && prevedene[i] === z.replace(",", "."));
+    need(pravilne.length > 0 && pravilne.every(Boolean),
+      `angleščina decimalno vejico zamenja s piko` +
+      (pravilne.every(Boolean) ? "" : ` — ostalo: ${številke.filter((z, i) => !pravilne[i]).join(", ")}`));
+    /* Vrstni red je nosilen: brezčrkovni napisi se ustavijo pred iskanjem po slovarju,
+       zato mora pretvorba teči pred tem preskokom, sicer se nikoli ne zgodi. */
+    need(jez.indexOf('if (j === "en")') < jez.indexOf("if (!črke(n) ||"),
+      "decimalno ločilo se pretvori pred preskokom brezčrkovnih napisov");
+    /* Nemščina vejico piše tako kot slovenščina, zato sme ločilo menjati samo angleščina. */
+    need(!/j === "de"[\s\S]{0,120}DECIMALNA/.test(jez),
+      "mehanizem ne spreminja števil v nemščini");
+  }
+
+  /* Robna presledka predloginega napisa nista okrasna: sta ločnica do sosednjega elementa,
+     npr. "<span>ob reki <em>Kolpi</em>" in "<b>Majda</b> · odgovorimo". Ključi se v slovarju
+     pišejo brez njih — tako zahteva pravilo zgoraj —, zato jih mora mehanizem vrniti, sicer
+     gostu dve besedi zrasteva v eno: "an derKolpa". */
+  const tvegani = [...new Set([...js.matchAll(/>([A-Za-zÀ-ž][^<>]{2,40}?) <[a-zA-Z]/g)].map(m => normal(m[1])))]
+    .filter(k => Object.hasOwn(DE, k));
+  need(tvegani.length >= 2,
+    `v predlogi je ${tvegani.length} prevedljivih napisov, ki se morajo končati s presledkom`);
+  const ROB = jez.match(/return \(\/\^\\s\/[^\n]*/);
+  need(!!ROB, "mehanizem ob izpisu vrne robna presledka izvirnika");
+  if (ROB && tvegani.length) {
+    const izpis = (napis) => vm.runInNewContext(
+      "(() => { const n = normal(napis); " + ROB[0] + " })()",
+      { napis, normal, slovar: DE });
+    const zlit = [];
+    for (const k of tvegani) {
+      if (izpis(k + " ") !== DE[k] + " ") zlit.push(`konec: ${JSON.stringify(izpis(k + " "))}`);
+      if (izpis(" " + k) !== " " + DE[k]) zlit.push(`začetek: ${JSON.stringify(izpis(" " + k))}`);
+      if (izpis(k) !== DE[k]) zlit.push(`brez robov: ${JSON.stringify(izpis(k))}`);
+    }
+    need(zlit.length === 0, `noben preveden napis ne izgubi ločilnega presledka` +
+      (zlit.length ? ` — ${zlit.slice(0, 3).join(" | ")}` : ""));
+  }
+}
+
+/* Stikalo je edini novi kos vmesnika: trije gumbi v nogi, vsak z imenom za bralnik, ki
+   vsebuje tudi napis na gumbu (WCAG 2.5.3), in označen privzeti jezik. */
+need(/<html lang="sl">/.test(html), "stran se napove kot slovenska");
+need(/class="langs" id="langs" role="group" aria-label="Jezik"/.test(html),
+  "skupina za izbiro jezika je napovedana bralniku");
+const jezikovniGumbi = [...html.matchAll(/data-jezik="([a-z]{2})" aria-pressed="(true|false)" aria-label="([^"]+)">([^<]+)<\/button>/g)]
+  .map(m => ({ koda: m[1], stisnjen: m[2], metka: m[3], napis: m[4] }));
+need(jezikovniGumbi.length === 3, `v nogi je ${jezikovniGumbi.length} jezikovnih gumbov`);
+need(jezikovniGumbi.map(g => g.koda).join(",") === "sl,de,en",
+  "gumbi ponudijo slovenščino, nemščino in angleščino v tem vrstnem redu");
+need(jezikovniGumbi.filter(g => g.stisnjen === "true").map(g => g.koda).join() === "sl",
+  "privzeto je označen slovenski gumb");
+for (const g of jezikovniGumbi) {
+  /* Oznaka jezika je začetek njegovega imena: SL / Slovenščina, DE / Deutsch, EN / English.
+     Tako je napis na gumbu del imena, ki ga bere bralnik (WCAG 2.5.3), ne pa tudi beseda,
+     ki bi jo morali prevajati — ime jezika v seznamu ostane vedno v svojem jeziku. */
+  need(g.napis === g.koda.toUpperCase(), `gumb ${g.koda}: napis je kratka oznaka jezika`);
+  need(g.metka.toLowerCase().startsWith(g.napis.toLowerCase()),
+    `gumb ${g.koda}: ime za bralnik se začne z napisom na gumbu`);
+  need(PRESKOC.some(re => re.test(g.metka)),
+    `gumb ${g.koda}: ime jezika ("${g.metka}") ostane neprevedeno in par drži v vseh jezikih`);
+}
+
+/* Prevajalec mora teči za predlogo: sicer prvi izpis ostane nepreveden, dokler ga gost
+   sam ne premakne. */
+const nalozeni = [...html.matchAll(/<script src="([\w.]+)"><\/script>/g)].map(m => m[1]);
+need(nalozeni.join(",") === "app.js,jeziki.js", "jeziki.js se naloži za app.js");
+need(/const PRIVZET = "sl"/.test(jez), "slovenščina ostane privzeti jezik in prvi izpis");
+/* Karta zapisanih izvirnikov nastane šele ob prvi spremembi, zato mora biti spremenljivka,
+   ne konstanta — sicer brskalnik javi TypeError šele, ko gost prvič klikne DE. */
+need(/let karta = IZV_A\.get\(el\)/.test(jez), "karta atributov je zapisljiva spremenljivka");
+/* Preklop nazaj morajo napisati sami: ker predloge nikoli ne vrnemo v DOM, edino zapomnjen
+   izvirnik ve, kaj je bilo na mestu pred prevodom. */
+need(/if \(jezik === PRIVZET\) \{[\s\S]{0,140}n\.data = zapis\[0\]/.test(jez),
+  "vrnitev v slovenščino obnovi izvirnik besedila");
+need(/if \(jezik === PRIVZET\) \{[\s\S]{0,220}el\.setAttribute\(a, rec\[0\]\)/.test(jez),
+  "vrnitev v slovenščino obnovi izvirnik atributa");
+need(/const SLOVARJI = \{ de: DE_JEZIK, en: EN_JEZIK \}/.test(jez),
+  "mehanizem nikoli ne ponudi jezika, za katerega slovarja ni");
+for (const a of ["alt", "aria-label", "placeholder", "title"])
+  need(new RegExp(`const ATRIBI = \\[[^\\]]*"${a}"`).test(jez), `atribut ${a} gre skozi slovar`);
+
+/* Gumb za jezik je na telefonu najpomembnejši nov gib — enaka meja za prst kot pri meniju. */
+const jezGumbiCSS = [...pasPrst.matchAll(/\.langs button\s*\{([^}]*)\}/g)].map(m => m[1]);
+need(vsaj44(jezGumbiCSS), "stikalo za jezik ima na telefonu gumb, visok vsaj 44 px");
+need(jezGumbiCSS.some(v => /justify-content:center/.test(v)),
+  "napis jezikovnega gumba je na telefonu poravnan v sredino");
+
+/* 11. glava mora obljubiti obe nastanitvi, sicer delitelj na Facebooku pokaže staro ponudbo */
 need((html.match(/"@type":"LodgingBusiness"/g) || []).length === loki.length,
   `JSON-LD napove ${loki.length} nastanitvi`);
 for (const l of loki) need(html.includes(l.naslov), `glava vsebuje naslov ${l.naslov}`);
